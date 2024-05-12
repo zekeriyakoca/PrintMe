@@ -1,2 +1,18 @@
 
 PrintMe.API/obj/
+
+PrintMe.API/appsettings.Development.json
+
+PrintMe.Application/bin/
+
+PrintMe.Application/obj/
+
+PrintMe.API/bin/
+
+PrintMe.Infrastructure/bin/
+
+PrintMe.Infrastructure/obj/
+
+PrintMe.UnitTests/bin/
+
+PrintMe.UnitTests/obj/
