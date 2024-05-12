@@ -19,7 +19,7 @@ public class CatalogService : ICatalogService
         return await _catalogRepository.GetCatalogItems();
     }
 
-    public async Task<CatalogItem> GetCatalogItem(int id)
+    public async Task<CatalogItem?> GetCatalogItem(int id)
     {
         return await _catalogRepository.GetCatalogItem(id);
     }
@@ -34,8 +34,9 @@ public class CatalogService : ICatalogService
         await _catalogRepository.CreateCatalogItem(catalogItem);
     }
 
-    public async Task DeleteCatalogItem(int id)
+    public ValueTask DeleteCatalogItem(int id)
     {
-        await _catalogRepository.DeleteCatalogItem(id);
+        _catalogRepository.DeleteCatalogItem(id);
+        return ValueTask.CompletedTask;
     }
 }

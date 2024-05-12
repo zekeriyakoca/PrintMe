@@ -1,18 +1,26 @@
+using Microsoft.EntityFrameworkCore;
 using PrintMe.Application.Entities;
 using PrintMe.Application.Interfaces.Repositories;
+using PrintMe.Infrastructure.Database;
 
 namespace PrintMe.Infrastructure.Repositories;
 
 public class CatalogRepository : ICatalogRepository
 {
-    public Task<IEnumerable<CatalogItem>> GetCatalogItems()
+    private readonly ApplicationContext _context;
+
+    public CatalogRepository(ApplicationContext context)
     {
-        throw new NotImplementedException();
+        _context = context;
+    }
+    public async Task<IEnumerable<CatalogItem>> GetCatalogItems()
+    {
+        return await _context.CatalogItems.ToListAsync();
     }
 
-    public Task<CatalogItem> GetCatalogItem(int id)
+    public async Task<CatalogItem?> GetCatalogItem(int id)
     {
-        throw new NotImplementedException();
+        return await _context.CatalogItems.FirstOrDefaultAsync(x=> x.Id == id);
     }
 
     public Task UpdateCatalogItem(CatalogItem catalogItem)
@@ -22,11 +30,12 @@ public class CatalogRepository : ICatalogRepository
 
     public Task CreateCatalogItem(CatalogItem catalogItem)
     {
-        throw new NotImplementedException();
+        _context.CatalogItems.Add(catalogItem);
+        return _context.SaveChangesAsync();
     }
 
-    public Task DeleteCatalogItem(int id)
+    public void DeleteCatalogItem(int id)
     {
-        throw new NotImplementedException();
+        _context.CatalogItems.Remove(new CatalogItem { Id = id });
     }
 }

@@ -5,8 +5,8 @@ namespace PrintMe.Application.Interfaces.Repositories;
 public interface ICatalogRepository
 {
     Task<IEnumerable<CatalogItem>> GetCatalogItems();
-    Task<CatalogItem> GetCatalogItem(int id);
+    Task<CatalogItem?> GetCatalogItem(int id);
     Task UpdateCatalogItem(CatalogItem catalogItem);
     Task CreateCatalogItem(CatalogItem catalogItem);
-    Task DeleteCatalogItem(int id);
+    void DeleteCatalogItem(int id);
 }
