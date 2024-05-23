@@ -54,8 +54,12 @@ public class CatalogController : BaseController
         return Ok(catalogItem);
     }
     
-    // TODO : Do Search by multiple fields
-    
+    [HttpPost("search")]
+    public async Task<ActionResult> SearchCatalogItems([FromBody]CatalogItemSearchRequest searchRequest)
+    {
+        var items = await _catalogService.SearchCatalogItems(searchRequest);
+        return Ok(items);
+    }
     
 
     [HttpPut("{id}")]

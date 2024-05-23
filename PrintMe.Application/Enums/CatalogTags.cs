@@ -1,8 +1,8 @@
 namespace PrintMe.Application.Enums;
 
 [Flags]
-public enum CatalogType
+public enum CatalogTags
 {
-    Default,
-    Print
+    OnSale = 1
+    
 }

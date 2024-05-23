@@ -40,6 +40,50 @@ public class CatalogService : ICatalogService
         
         return items;
     }
+    public async Task<PaginatedItems<CatalogItem>> SearchCatalogItems(CatalogItemSearchRequest searchRequest)
+    {
+        var query = _catalogRepository.GetCatalogItemsLazily();
+        
+        if (!string.IsNullOrEmpty(searchRequest.SearchTerm))
+        {
+            // TODO : Implement free text search and, then, search utilizing AI
+            query = query.Where(x => x.Name.Contains(searchRequest.SearchTerm) || x.Description.Contains(searchRequest.SearchTerm) || x.SearchParameters.Contains(searchRequest.SearchTerm));
+        }
+        
+        if (searchRequest.PriceFrom.HasValue)
+        {
+            query = query.Where(x => x.Price >= searchRequest.PriceFrom);
+        }
+        
+        if (searchRequest.PriceTo.HasValue)
+        {
+            query = query.Where(x => x.Price <= searchRequest.PriceTo);
+        }
+        
+        if (searchRequest.IsOnlyAvailableItems)
+        {
+            query = query.Where(x => x.AvailableStock > 0);
+        }
+        
+        if (searchRequest.Tags.HasValue)
+        {
+            query = query.Where(x => x.Tags.HasValue && x.Tags.Value.HasFlag(searchRequest.Tags.Value));
+        }
+        
+        if (searchRequest.Type.HasValue)
+        {
+            query = query.Where(x => x.CatalogType.HasFlag(searchRequest.Type.Value));
+        }
+
+        var count = await query.LongCountAsync();
+        var items = await query
+            .Skip(searchRequest.PageIndex * searchRequest.PageSize)
+            .Take(searchRequest.PageSize)
+            .ToListAsync();
+
+        return new PaginatedItems<CatalogItem>(searchRequest.PageIndex, searchRequest.PageSize, count, items);
+
+    }
 
     public async Task<CatalogItem?> GetCatalogItem(int id)
     {

@@ -18,17 +18,23 @@ public class CatalogItem
 
     public string Description { get; set; }
 
+    public string SearchParameters { get; set; }
+
     public decimal Price { get; set; }
 
     public string PictureFileName { get; set; }
 
     public CatalogType CatalogType { get; set; }
+    public CatalogTags? Tags { get; set; }
 
     // Quantity in stock
     public int AvailableStock { get; set; }
 
     // Available stock at which we should reorder
     public int RestockThreshold { get; set; }
+    
+    [Range(1,99)]
+    public int? SalePercentage { get; set; }
 
 
     // Maximum number of units that can be in-stock at any time (due to physicial/logistical constraints in warehouses)
