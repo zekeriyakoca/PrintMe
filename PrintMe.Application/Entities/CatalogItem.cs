@@ -11,7 +11,6 @@ namespace PrintMe.Application.Entities;
 public class CatalogItem
 {
     public int Id { get; set; }
-
     
     [Required]
     [MaxLength(50)]

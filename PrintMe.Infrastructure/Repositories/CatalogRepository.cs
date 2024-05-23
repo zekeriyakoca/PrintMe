@@ -13,9 +13,14 @@ public class CatalogRepository : ICatalogRepository
     {
         _context = context;
     }
+    
+    public IQueryable<CatalogItem> GetCatalogItemsLazily()
+    {
+        return _context.CatalogItems.AsNoTracking().AsQueryable();
+    }
     public async Task<IEnumerable<CatalogItem>> GetCatalogItems()
     {
-        return await _context.CatalogItems.ToListAsync();
+        return await _context.CatalogItems.AsNoTracking().ToListAsync();
     }
 
     public async Task<CatalogItem?> GetCatalogItem(int id)

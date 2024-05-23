@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using PrintMe.API.Services;
 using PrintMe.Application.Entities;
 using PrintMe.Application.Interfaces;
+using PrintMe.Application.Model;
 
 namespace PrintMe.API.Controllers;
 
@@ -17,14 +18,32 @@ public class CatalogController : BaseController
     }
     
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<CatalogItem>>> GetCatalogItems()
+    public async Task<ActionResult> GetCatalogItems([FromQuery]PaginationRequest paginationRequest)
     {
-        return Ok(await _catalogService.GetCatalogItems());
+        var items = await _catalogService.GetCatalogItems(paginationRequest);
+        return Ok(items);
+    }
+    
+    [HttpPost("items-by-ids")]
+    public async Task<ActionResult> GetCatalogItems([FromBody]int[] ids)
+    {
+        if (!ids.Any())
+        {
+            return BadRequest("No id provided.");
+        }
+
+        var items = await _catalogService.GetItemsByIds(ids);
+        return Ok(items);
     }
 
     [HttpGet("{id}")]
-    public async Task<ActionResult<CatalogItem>> GetCatalogItem(int id)
+    public async Task<ActionResult<CatalogItem>> GetCatalogItem([FromRoute]int id)
     {
+        if (id < 1)
+        {
+            return BadRequest("Id is not valid.");
+        }
+        
         var catalogItem = await _catalogService.GetCatalogItem(id);
 
         if (catalogItem == null)
@@ -34,9 +53,13 @@ public class CatalogController : BaseController
 
         return Ok(catalogItem);
     }
+    
+    // TODO : Do Search by multiple fields
+    
+    
 
     [HttpPut("{id}")]
-    public async Task<IActionResult> UpdateCatalogItem(int id, CatalogItem catalogItem)
+    public async Task<IActionResult> UpdateCatalogItem([FromRoute]int id, [FromBody]CatalogItem catalogItem)
     {
         if (id != catalogItem.Id)
         {

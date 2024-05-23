@@ -1,10 +1,12 @@
 using PrintMe.Application.Entities;
+using PrintMe.Application.Model;
 
 namespace PrintMe.Application.Interfaces;
 
 public interface ICatalogService
 {
-    Task<IEnumerable<CatalogItem>> GetCatalogItems();
+    Task<PaginatedItems<CatalogItem>> GetCatalogItems(PaginationRequest paginationRequest);
+    Task<IEnumerable<CatalogItem>> GetItemsByIds(int[] ids);
     Task<CatalogItem?> GetCatalogItem(int id);
     Task UpdateCatalogItem(CatalogItem catalogItem);
     Task CreateCatalogItem(CatalogItem catalogItem);

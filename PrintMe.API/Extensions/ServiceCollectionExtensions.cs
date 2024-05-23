@@ -15,6 +15,8 @@ public static class ServiceCollectionExtensions
              options.UseSqlServer(builder.Configuration.GetConnectionString("SqlDefaultConnection"),  b => b.MigrationsAssembly("PrintMe.API")));
 
         builder.Services.AddTransient<ICatalogService, CatalogService>();
+        builder.Services.AddTransient<IOrderService, OrderService>();
+        builder.Services.AddTransient<IBasketService, BasketService>();
 
         builder.Services.AddTransient<ICatalogRepository, CatalogRepository>();
         // REVIEW: This is done for development ease but shouldn't be here in production
