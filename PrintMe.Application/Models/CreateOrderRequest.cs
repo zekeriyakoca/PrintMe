@@ -13,4 +13,5 @@ public record CreateOrderRequest(
     DateTime CardExpiration,
     string CardSecurityNumber,
     int CardTypeId,
-    List<int> BasketItemIds);
+    List<int> BasketItemIds,
+    Guid basketId);

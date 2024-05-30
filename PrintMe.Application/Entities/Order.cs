@@ -25,7 +25,7 @@ public class Order
     
     public string Description { get; private set; }
 
-    public IReadOnlyList<OrderItem> OrderItems { get; }
+    public IList<OrderItem> OrderItems { get; }
     
     public int? PaymentId { get; private set; }
     
@@ -65,10 +65,9 @@ public class Order
         {
             //add validated new order item
             var orderItem = new OrderItem(productId, productName, unitPrice, discount, pictureUrl, units);
-            _orderItems.Add(orderItem);
+            OrderItems.Add(orderItem);
         }
     }
-    
 
     public void SetPaidStatus()
     {

@@ -1,12 +1,11 @@
-using PrintMe.Application.Entities;
 using PrintMe.Application.Model;
 
-namespace PrintMe.Application.Interfaces;
+namespace PrintMe.Application.Interfaces.Repositories;
 
-public interface IBasketService
+public interface IBasketRepository
 {
+    
     Task<CustomerBasket?> GetBasketAsync(string customerId);
     Task<CustomerBasket?> UpdateBasketAsync(CustomerBasket basket);
     Task<bool> DeleteBasketAsync(string id);
-    Task<bool> ValidateBasket(string customerId);
 }

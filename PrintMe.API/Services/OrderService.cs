@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using PrintMe.Application.Entities;
 using PrintMe.Application.Interfaces;
 using PrintMe.Application.Model;
 
@@ -13,8 +14,8 @@ public class OrderService : IOrderService
         _context = context;
     }
     
-    public async Task CreateOrderAsync(CreateOrderRequest dto)
+    public async Task CreateDraftOrderAsync(CreateOrderRequest dto)
     {
-        _context.
+        throw new NotImplementedException();
     }
 }
