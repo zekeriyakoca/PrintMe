@@ -82,7 +82,6 @@ public class CatalogService : ICatalogService
             .ToListAsync();
 
         return new PaginatedItems<CatalogItem>(searchRequest.PageIndex, searchRequest.PageSize, count, items);
-
     }
 
     public async Task<CatalogItem?> GetCatalogItem(int id)
