@@ -94,4 +94,11 @@ public class CatalogController : BaseController
         return NoContent();
     }
     
+    [HttpGet("/test")]
+    [Authorize(Policy = "User")]
+    public IActionResult AuthorizationTest()
+    {
+        return Ok();
+    }
+    
 }

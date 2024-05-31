@@ -2,14 +2,15 @@ using Microsoft.EntityFrameworkCore;
 using PrintMe.Application.Entities;
 using PrintMe.Application.Interfaces;
 using PrintMe.Application.Model;
+using PrintMe.Infrastructure.Database;
 
 namespace PrintMe.API.Services;
 
 public class OrderService : IOrderService
 {
-    private readonly DbContext _context;
+    private readonly ApplicationContext _context;
 
-    public OrderService(DbContext context)
+    public OrderService(ApplicationContext context)
     {
         _context = context;
     }
