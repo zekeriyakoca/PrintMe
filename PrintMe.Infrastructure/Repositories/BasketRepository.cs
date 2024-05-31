@@ -27,6 +27,12 @@ public class BasketRepository : IBasketRepository
 
         return JsonSerializer.Deserialize<CustomerBasket?>(data.Span);
     }
+    
+    public Task<CustomerBasket?> CreateEmptyBasketAsync(string customerId)
+    {
+        var newBasket = new CustomerBasket(customerId);
+        return UpdateBasketAsync(newBasket);
+    }
 
     public async Task<CustomerBasket?> UpdateBasketAsync(CustomerBasket basket)
     {

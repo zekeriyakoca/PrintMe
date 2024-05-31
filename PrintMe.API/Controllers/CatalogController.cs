@@ -63,6 +63,7 @@ public class CatalogController : BaseController
     
 
     [HttpPut("{id}")]
+    [Authorize(Policy = "Admin")]
     public async Task<IActionResult> UpdateCatalogItem([FromRoute]int id, [FromBody]CatalogItem catalogItem)
     {
         if (id != catalogItem.Id)
@@ -76,6 +77,7 @@ public class CatalogController : BaseController
     }
 
     [HttpPost]
+    [Authorize(Policy = "Admin")]
     public async Task<ActionResult<CatalogItem>> CreateCatalogItem(CatalogItem catalogItem)
     {
         await _catalogService.CreateCatalogItem(catalogItem);
@@ -84,6 +86,7 @@ public class CatalogController : BaseController
     }
 
     [HttpDelete("{id}")]
+    [Authorize(Policy = "Admin")]
     public async Task<IActionResult> DeleteCatalogItem(int id)
     {
         await _catalogService.DeleteCatalogItem(id);

@@ -12,9 +12,19 @@ builder.AddApplicationServices();
 builder.Services.AddControllers();
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-    .AddMicrosoftIdentityWebApi(builder.Configuration.GetSection("AzureAd"));
+    .AddMicrosoftIdentityWebApi(options =>
+    {
+        builder.Configuration.Bind("AzureAd", options);
+        options.TokenValidationParameters.NameClaimType = "name";
+    }, options => { builder.Configuration.Bind("AzureAd", options); });
 
-builder.Services.AddAuthorization();
+builder.Services.AddAuthorization(config =>
+{
+    config.AddPolicy("User", policyBuilder =>
+        policyBuilder.Requirements.Add(new ScopeAuthorizationRequirement() { RequiredScopesConfigurationKey = $"AzureAd:UserScopes" }));
+    config.AddPolicy("Admin", policyBuilder =>
+        policyBuilder.Requirements.Add(new ScopeAuthorizationRequirement() { RequiredScopesConfigurationKey = $"AzureAd:AdminScopes" }));
+});
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
@@ -28,6 +38,12 @@ builder.Services.AddStackExchangeRedisCache(options =>
 builder.Services.AddSingleton<IConnectionMultiplexer>(
     ConnectionMultiplexer.Connect(builder.Configuration.GetConnectionString("RedisConnection") ?? "localhost"));
 
+builder.Services.AddSession(opt => 
+{ 
+    opt.Cookie.HttpOnly = true; 
+    opt.Cookie.IsEssential = true; 
+    opt.IdleTimeout = TimeSpan.FromDays(1);
+}); 
 
 var app = builder.Build();
 
