@@ -40,14 +40,14 @@ public class CatalogService : ICatalogService
         
         return items;
     }
-    public async Task<PaginatedItems<CatalogItem>> SearchCatalogItems(CatalogItemSearchRequest searchRequest)
+    public async Task<PaginatedItems<CatalogItemDto>> SearchCatalogItems(CatalogItemSearchRequest searchRequest)
     {
         var query = _catalogRepository.GetCatalogItemsLazily();
         
         if (!string.IsNullOrEmpty(searchRequest.SearchTerm))
         {
             // TODO : Implement free text search and, then, search utilizing AI
-            query = query.Where(x => x.Name.Contains(searchRequest.SearchTerm) || x.Description.Contains(searchRequest.SearchTerm) || x.SearchParameters.Contains(searchRequest.SearchTerm));
+            query = query.Where(x => x.Name.Contains(searchRequest.SearchTerm) || x.Description.Contains(searchRequest.SearchTerm) || x.Owner.Contains(searchRequest.SearchTerm) || x.SearchParameters.Contains(searchRequest.SearchTerm));
         }
         
         if (searchRequest.PriceFrom.HasValue)
@@ -74,14 +74,25 @@ public class CatalogService : ICatalogService
         {
             query = query.Where(x => x.CatalogType.HasFlag(searchRequest.Type.Value));
         }
+        
+        if (searchRequest.Category.HasValue)
+        {
+            query = query.Where(x => x.Category.HasFlag(searchRequest.Category.Value));
+        }
+        
+        if (searchRequest.Size.HasValue)
+        {
+            query = query.Where(x => x.Size == searchRequest.Size);
+        }
 
         var count = await query.LongCountAsync();
         var items = await query
             .Skip(searchRequest.PageIndex * searchRequest.PageSize)
             .Take(searchRequest.PageSize)
+            .Select(x=>new CatalogItemDto(x))
             .ToListAsync();
 
-        return new PaginatedItems<CatalogItem>(searchRequest.PageIndex, searchRequest.PageSize, count, items);
+        return new PaginatedItems<CatalogItemDto>(searchRequest.PageIndex, searchRequest.PageSize, count, items);
     }
 
     public async Task<CatalogItem?> GetCatalogItem(int id)

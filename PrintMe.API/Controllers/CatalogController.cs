@@ -18,6 +18,7 @@ public class CatalogController : BaseController
     }
     
     [HttpGet]
+    [Authorize(Policy = "Admin")]
     public async Task<ActionResult> GetCatalogItems([FromQuery]PaginationRequest paginationRequest)
     {
         var items = await _catalogService.GetCatalogItems(paginationRequest);
@@ -56,6 +57,13 @@ public class CatalogController : BaseController
     
     [HttpPost("search")]
     public async Task<ActionResult> SearchCatalogItems([FromBody]CatalogItemSearchRequest searchRequest)
+    {
+        var items = await _catalogService.SearchCatalogItems(searchRequest);
+        return Ok(items);
+    }
+    
+    [HttpGet("search")]
+    public async Task<ActionResult> GetCatalogItemsFiltered([FromQuery]CatalogItemSearchRequest searchRequest)
     {
         var items = await _catalogService.SearchCatalogItems(searchRequest);
         return Ok(items);

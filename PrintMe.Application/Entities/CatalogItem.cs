@@ -17,15 +17,23 @@ public class CatalogItem
     public string Name { get; set; }
 
     public string Description { get; set; }
+    
+    public string Owner { get; set; }
 
     public string SearchParameters { get; set; }
 
     public decimal Price { get; set; }
+    
 
     public string PictureFileName { get; set; }
 
-    public CatalogType CatalogType { get; set; }
+    public Category Category { get; set; } = Category.None;
+
+    public CatalogType CatalogType { get; set; } = CatalogType.Default;
+    
     public CatalogTags? Tags { get; set; }
+
+    public PrintSize? Size { get; set; }
 
     // Quantity in stock
     public int AvailableStock { get; set; }

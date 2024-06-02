@@ -27,7 +27,7 @@ public class OrderController : BaseController
         throw new NotImplementedException();
     }
     
-    [HttpPost]
+    [HttpPost("draft")]
     public async Task<ActionResult> CreateOrderDraftAsync([FromBody]CreateDraftOrderRequest dto)
     {
         throw new NotImplementedException();
