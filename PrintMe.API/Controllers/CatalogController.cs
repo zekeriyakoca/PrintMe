@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using PrintMe.API.Services;
 using PrintMe.Application.Entities;
 using PrintMe.Application.Interfaces;
+using PrintMe.Application.Interfaces.Repositories;
 using PrintMe.Application.Model;
 
 namespace PrintMe.API.Controllers;
@@ -11,10 +12,12 @@ namespace PrintMe.API.Controllers;
 public class CatalogController : BaseController
 {
     private readonly ICatalogService _catalogService;
+    private readonly IImageRepository _imageRepository;
 
-    public CatalogController(ILogger<CatalogController> logger, ICatalogService catalogService) : base(logger)
+    public CatalogController(ILogger<CatalogController> logger, ICatalogService catalogService, IImageRepository imageRepository) : base(logger)
     {
         _catalogService = catalogService;
+        _imageRepository = imageRepository;
     }
     
     [HttpGet]
@@ -109,4 +112,43 @@ public class CatalogController : BaseController
         return Ok();
     }
     
+    public class UploadProductImagesRequest
+    {
+        public string FolderName { get; set; }
+        public IFormFile Image { get; set; }
+        public IFormFile? ImageAlternate { get; set; }
+        public IFormFile? Thumbnail { get; set; }
+        public IFormFile? ThumbnailAlternate { get; set; }
+        public List<IFormFile>? OtherImages { get; set; } = new List<IFormFile>();
+    }
+    
+    [HttpPost("upload-product-images")]
+    public async Task<IActionResult> UploadImages([FromForm] UploadProductImagesRequest request)
+    {
+        // if (await _imageRepository.DoesFolderExistAsync(request.FolderName))
+        // {
+        //     return BadRequest("Folder already exists.");
+        // }
+    
+        using var imageStream = request.Image.OpenReadStream();
+        using var imageAlternateStream = request.ImageAlternate?.OpenReadStream();
+        using var thumbnailStream = request.Thumbnail?.OpenReadStream();
+        using var thumbnailAlternateStream = request.ThumbnailAlternate?.OpenReadStream();
+    
+        List<Stream> otherImageStreams = new List<Stream>();
+        foreach (var otherImage in request.OtherImages)
+        {
+            otherImageStreams.Add(otherImage.OpenReadStream());
+        }
+    
+        await _imageRepository.UploadImageAsync(request.FolderName, imageStream, imageAlternateStream, thumbnailStream, thumbnailAlternateStream, otherImageStreams);
+        return Ok("Images uploaded successfully.");
+    }
+
+    [HttpGet("get-image-urls")]
+    public async Task<IActionResult> GetImageUrls([FromQuery] string folderName)
+    {
+        var imagesDto = await _imageRepository.GetImageUrlsAsync(folderName);
+        return Ok(imagesDto);
+    }
 }

@@ -20,6 +20,7 @@ public static class ServiceCollectionExtensions
 
         builder.Services.AddTransient<ICatalogRepository, CatalogRepository>();
         builder.Services.AddTransient<IBasketRepository, BasketRepository>();
+        builder.Services.AddSingleton<IImageRepository, ImageRepository>();
         // REVIEW: This is done for development ease but shouldn't be here in production
         // builder.Services.AddMigration<ApplicationContext, ApplicationContextSeed>();
     }
