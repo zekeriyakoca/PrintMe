@@ -15,7 +15,10 @@ public class CatalogItemDto
 
     public decimal Price { get; set; }
 
-    public string Image { get; set; }
+    // TODO : Remove when image object implemented
+    public string Image { get; }
+    
+    public string ImagesDto { get; set; }
 
     public string Link => "catalog/" + this.Id;
 

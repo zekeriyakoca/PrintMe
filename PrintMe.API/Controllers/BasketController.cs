@@ -20,9 +20,15 @@ public class BasketController : BaseController
         return Ok(basket.Items);
     }
 
-    [HttpPost("upsert")]
+    [HttpPost("upsert-item")]
     public async Task<IActionResult> UpsertBasketItem([FromBody] BasketItem basketItem)
     {
         return Ok(await _basketService.UpsertBasketItemAsync(CurrentUser.Id, basketItem));
+    }
+    
+    [HttpPut]
+    public async Task<IActionResult> SetBasket([FromBody] List<BasketItem> basketItems)
+    {
+        return Ok(await _basketService.UpdateBasketAsync(new CustomerBasket(CurrentUser.Id){Items = basketItems}));
     }
 }

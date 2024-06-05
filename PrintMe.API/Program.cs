@@ -42,6 +42,8 @@ builder.Services.AddSession(opt =>
 { 
     opt.Cookie.HttpOnly = true; 
     opt.Cookie.IsEssential = true; 
+    opt.Cookie.SameSite = SameSiteMode.None;
+    opt.Cookie.SecurePolicy = CookieSecurePolicy.Always;
     opt.IdleTimeout = TimeSpan.FromDays(1);
 }); 
 
@@ -52,6 +54,7 @@ builder.Services.AddCors(options =>
         {
             builder.WithOrigins("http://localhost:3000")
                 .AllowAnyHeader()
+                .AllowCredentials()
                 .AllowAnyMethod();
         });
 });
@@ -68,6 +71,9 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+app.UseSession();
+
 app.MapControllers();
 
 app.Run();
