@@ -95,9 +95,9 @@ public class CatalogService : ICatalogService
         return new PaginatedItems<CatalogItemDto>(searchRequest.PageIndex, searchRequest.PageSize, count, items);
     }
 
-    public async Task<CatalogItem?> GetCatalogItem(int id)
+    public async Task<CatalogItemDto?> GetCatalogItem(int id)
     {
-        return await _catalogRepository.GetCatalogItem(id);
+        return new CatalogItemDto(await _catalogRepository.GetCatalogItem(id));
     }
 
     public async Task UpdateCatalogItem(CatalogItem catalogItem)

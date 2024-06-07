@@ -1,3 +1,4 @@
+using Azure.Storage.Queues;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Identity.Web;
 using PrintMe.API;
@@ -46,6 +47,8 @@ builder.Services.AddSession(opt =>
     opt.Cookie.SecurePolicy = CookieSecurePolicy.Always;
     opt.IdleTimeout = TimeSpan.FromDays(1);
 }); 
+
+builder.Services.AddSingleton(sp => new QueueClient(builder.Configuration["AzureBlobStorage:ConnectionString"], "images-to-process"));
 
 builder.Services.AddCors(options =>
 {

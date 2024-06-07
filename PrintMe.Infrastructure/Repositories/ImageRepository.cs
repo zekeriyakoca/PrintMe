@@ -61,11 +61,17 @@ public class ImageRepository : IImageRepository
         return new ImagesDto(thumbnailUrl, thumbnailAlternateUrl, imageUrl, imageAlternateUrl, otherImages);
     }
 
-    private async Task UploadBlobAsync(BlobContainerClient containerClient, string blobName, Stream stream, string contentType = "image/jpeg")
+    public async Task<string> UploadBlobAsync(string blobName, Stream stream, string contentType = "image/jpeg")
+    {
+        var containerClient = _blobServiceClient.GetBlobContainerClient(_containerName);
+        return await UploadBlobAsync(containerClient, blobName, stream, contentType);
+    }
+    private async Task<string> UploadBlobAsync(BlobContainerClient containerClient, string blobName, Stream stream, string contentType = "image/jpeg")
     {
         var blobClient = containerClient.GetBlobClient(blobName);
-        await blobClient.UploadAsync(stream, new BlobHttpHeaders { ContentType = contentType });
+        var response = await blobClient.UploadAsync(stream, new BlobHttpHeaders { ContentType = contentType });
         // await blobClient.SetAccessTierAsync(AccessTier.Hot);
+        return blobClient.Uri.AbsoluteUri;
     }
 
     public async Task<bool> DoesFolderExistAsync(string folderName)
