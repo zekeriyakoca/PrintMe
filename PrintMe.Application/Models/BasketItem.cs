@@ -1,5 +1,5 @@
 using System.ComponentModel.DataAnnotations;
-using System.Drawing;
+using PrintMe.Application.Enums;
 
 namespace PrintMe.Application.Model;
 
@@ -12,8 +12,9 @@ public class BasketItem
     public decimal OldUnitPrice { get; set; }
     [Range(1,100)]
     public int Quantity { get; set; }
-    public Size Size { get; set; }
+    public PrintSize Size { get; set; }
     public string PictureUrl { get; set; }
+    public int FrameId { get; set; } = 0;
 
     public void Update(BasketItem item)
     {
