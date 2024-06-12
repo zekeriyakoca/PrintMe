@@ -31,6 +31,8 @@ public class CatalogItem
     public string PictureFileName { get; set; }
     
     public string OriginalImage { get; set; }
+    
+    public List<ProductImage> ProductImages { get; set; }
 
     public Category Category { get; set; } = Category.None;
 

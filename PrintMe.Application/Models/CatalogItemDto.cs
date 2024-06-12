@@ -43,7 +43,7 @@ public class CatalogItemDto
     
     public int? SalePercentage { get; set; }
     
-    public ImagesDto Images { get; set; }
+    public List<ImageDto> Images { get; set; }
 
     public string VariantType => "";
     public string Rating => "";
@@ -56,13 +56,19 @@ public class CatalogItemDto
         Motto = item.Motto;
         Description = item.Description;
         Price = Convert.ToInt32(item.Price * ((100 - item.SalePercentage.GetValueOrDefault(0)) / 100));
-        Image = GetImageBaseUrl(item.PictureFileName, ".jpg");
+        Image = GetImageBaseUrl(item.PictureFileName, ".jpeg");
         Category = item.Category;
         CatalogType = item.CatalogType;
         Owner = item.Owner;
         Tags = item.Tags;
         AvailableStock = item.AvailableStock;
         SalePercentage = item.SalePercentage;
-        Images = new ImagesDto(GetImageBaseUrl(item.PictureFileName, "-thumbnail.jpg"), GetImageBaseUrl(item.PictureFileName, "-mockup-thumbnail.jpg"), GetImageBaseUrl(item.PictureFileName, "-mockup.jpg"), GetImageBaseUrl(item.PictureFileName, ".jpg"), new List<string>());
+        Images = new List<ImageDto>()
+        {
+            new ImageDto(GetImageBaseUrl(item.PictureFileName, ".jpeg"), GetImageBaseUrl(item.PictureFileName, "-thumbnail.jpeg")),
+            new ImageDto(GetImageBaseUrl(item.PictureFileName, "-mockup1.jpeg"), GetImageBaseUrl(item.PictureFileName, "-mockup1-thumbnail.jpeg")),
+            new ImageDto(GetImageBaseUrl(item.PictureFileName, "-mockup2.jpeg"), GetImageBaseUrl(item.PictureFileName, "-mockup2-thumbnail.jpeg")),
+            new ImageDto(GetImageBaseUrl(item.PictureFileName, "-mockup3.jpeg"), GetImageBaseUrl(item.PictureFileName, "-mockup3-thumbnail.jpeg"))
+        };
     }
 }

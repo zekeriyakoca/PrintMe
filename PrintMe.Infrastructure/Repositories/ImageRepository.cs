@@ -21,44 +21,45 @@ public class ImageRepository : IImageRepository
     {
         var containerClient = _blobServiceClient.GetBlobContainerClient(_containerName);
 
-        await UploadBlobAsync(containerClient, $"{folderName}/image.jpg", imageStream);
+        await UploadBlobAsync(containerClient, $"{folderName}/image.jpeg", imageStream);
         if (imageAlternateStream != null)
         {      
-            await UploadBlobAsync(containerClient, $"{folderName}/imageAlternate.jpg", imageAlternateStream);
+            await UploadBlobAsync(containerClient, $"{folderName}/imageAlternate.jpeg", imageAlternateStream);
         }
         if (thumbnailStream != null)
         {      
-            await UploadBlobAsync(containerClient, $"{folderName}/thumbnail.jpg", thumbnailStream);
+            await UploadBlobAsync(containerClient, $"{folderName}/thumbnail.jpeg", thumbnailStream);
         }
         if (thumbnailAlternateStream != null)
         {      
-            await UploadBlobAsync(containerClient, $"{folderName}/thumbnailAlternate.jpg", thumbnailAlternateStream);
+            await UploadBlobAsync(containerClient, $"{folderName}/thumbnailAlternate.jpeg", thumbnailAlternateStream);
         }
 
 
         int index = 1;
         foreach (var otherImageStream in otherImageStreams)
         {
-            await UploadBlobAsync(containerClient, $"{folderName}/otherImage{index}.jpg", otherImageStream);
+            await UploadBlobAsync(containerClient, $"{folderName}/otherImage{index}.jpeg", otherImageStream);
             index++;
         }
     }
 
-    public async Task<ImagesDto> GetImageUrlsAsync(string folderName)
+    public async Task<ImageDto> GetImageUrlsAsync(string folderName)
     {
-        var containerClient = _blobServiceClient.GetBlobContainerClient(_containerName);
-        string thumbnailUrl = containerClient.GetBlobClient($"{folderName}/thumbnail.jpg").Uri.AbsoluteUri;
-        string thumbnailAlternateUrl = containerClient.GetBlobClient($"{folderName}/thumbnailAlternate.jpg").Uri.AbsoluteUri;
-        string imageUrl = containerClient.GetBlobClient($"{folderName}/image.jpg").Uri.AbsoluteUri;
-        string imageAlternateUrl = containerClient.GetBlobClient($"{folderName}/imageAlternate.jpg").Uri.AbsoluteUri;
-
-        List<string> otherImages = new List<string>();
-        await foreach (var blobItem in containerClient.GetBlobsAsync(prefix: $"{folderName}/otherImage"))
-        {
-            otherImages.Add(containerClient.GetBlobClient(blobItem.Name).Uri.AbsoluteUri);
-        }
-
-        return new ImagesDto(thumbnailUrl, thumbnailAlternateUrl, imageUrl, imageAlternateUrl, otherImages);
+        throw new NotImplementedException();
+        // var containerClient = _blobServiceClient.GetBlobContainerClient(_containerName);
+        // string thumbnailUrl = containerClient.GetBlobClient($"{folderName}/thumbnail.jpeg").Uri.AbsoluteUri;
+        // string thumbnailAlternateUrl = containerClient.GetBlobClient($"{folderName}/thumbnailAlternate.jpeg").Uri.AbsoluteUri;
+        // string imageUrl = containerClient.GetBlobClient($"{folderName}/image.jpeg").Uri.AbsoluteUri;
+        // string imageAlternateUrl = containerClient.GetBlobClient($"{folderName}/imageAlternate.jpeg").Uri.AbsoluteUri;
+        //
+        // List<string> otherImages = new List<string>();
+        // await foreach (var blobItem in containerClient.GetBlobsAsync(prefix: $"{folderName}/otherImage"))
+        // {
+        //     otherImages.Add(containerClient.GetBlobClient(blobItem.Name).Uri.AbsoluteUri);
+        // }
+        //
+        // return new ImagesDto(thumbnailUrl, thumbnailAlternateUrl, imageUrl, imageAlternateUrl, otherImages);
     }
 
     public async Task<string> UploadBlobAsync(string blobName, Stream stream, string contentType = "image/jpeg")

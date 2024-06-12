@@ -2,6 +2,13 @@ using System.Drawing;
 
 namespace PrintMe.Application.Model;
 
+public enum MockupTemplateType
+{
+    HorizontalForVerticalFrame,
+    HorizontalForHorizontalFrame,
+    VerticalForVerticalFrame,
+    VerticalForHorizontalFrame
+}
 public class MockupTemplate
 {
     public int Id { get; set; }
@@ -11,4 +18,5 @@ public class MockupTemplate
     public int Y { get; set; }
     public int Width { get; set; }
     public int Height { get; set; }
+    public MockupTemplateType Type { get; set; }
 }

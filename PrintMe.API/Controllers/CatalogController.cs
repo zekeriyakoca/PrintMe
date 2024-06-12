@@ -134,10 +134,10 @@ public class CatalogController : BaseController
         //     return BadRequest("Folder already exists.");
         // }
 
-        using var imageStream = request.Image.OpenReadStream();
-        using var imageAlternateStream = request.ImageAlternate?.OpenReadStream();
-        using var thumbnailStream = request.Thumbnail?.OpenReadStream();
-        using var thumbnailAlternateStream = request.ThumbnailAlternate?.OpenReadStream();
+        await using var imageStream = request.Image.OpenReadStream();
+        await using var imageAlternateStream = request.ImageAlternate?.OpenReadStream();
+        await using var thumbnailStream = request.Thumbnail?.OpenReadStream();
+        await using var thumbnailAlternateStream = request.ThumbnailAlternate?.OpenReadStream();
 
         List<Stream> otherImageStreams = new List<Stream>();
         foreach (var otherImage in request.OtherImages)
@@ -160,23 +160,19 @@ public class CatalogController : BaseController
     {
         public IEnumerable<IFormFile> Images { get; set; }
         public CatalogTags? Tag { get; set; }
-        public List<int> TemplateIds { get; set; }
+        public List<int> TemplateIds { get; set; } = new List<int>();
+        public bool IsVertical { get; set; } = false;
     }
 
     [HttpPost("generate-product-by-image")]
     public async Task<IActionResult> GenerateProductByImage([FromForm] GenerateProductByImageDto dto)
     {
-        if (dto.TemplateIds.Count == 0)
-            dto.TemplateIds.Add(1);
-        if (dto.TemplateIds.Any(x => !MockupTemplates.GetMockupTemplates().Select(x => x.Id).Contains(x)))
-        {
-            return BadRequest("Invalid template id");
-        }
+        var templates = RetrieveRandomTemplates(dto);
 
         foreach (var image in dto.Images)
         {
             string imageId = Guid.NewGuid().ToString();
-            using var imageStream = image.OpenReadStream();
+            await using var imageStream = image.OpenReadStream();
             var url = await _imageRepository.UploadBlobAsync(imageId, imageStream);
 
             // Step 2: Create QueueMessageContent object
@@ -186,7 +182,7 @@ public class CatalogController : BaseController
                 ImageUrl = url,
                 ImageDescription = image.FileName,
                 Tag = dto.Tag,
-                MockupTemplates = dto.TemplateIds.Select(id => MockupTemplates.GetMockupTemplates().Single(x => x.Id == id)).ToList() // Assuming MockupTemplate has an Id property
+                MockupTemplates = templates
             };
 
             // Step 3: Add the message to a processing queue
@@ -194,5 +190,35 @@ public class CatalogController : BaseController
         }
 
         return Ok();
+    }
+
+    private static List<MockupTemplate> RetrieveRandomTemplates(GenerateProductByImageDto dto)
+    {
+        var templates = new List<MockupTemplate>();
+        var verticalTemplates = MockupTemplates.GetMockupTemplates()
+            .Where(x => x.Type == (dto.IsVertical ? MockupTemplateType.VerticalForVerticalFrame : MockupTemplateType.VerticalForHorizontalFrame))
+            .ToList();
+        templates.Add(verticalTemplates.ElementAt(new Random().Next(verticalTemplates.Count)));
+
+        var horizontalTemplates = MockupTemplates.GetMockupTemplates()
+            .Where(x => x.Type == (dto.IsVertical ? MockupTemplateType.HorizontalForVerticalFrame : MockupTemplateType.HorizontalForHorizontalFrame))
+            .ToList();
+        templates.Add(horizontalTemplates.ElementAt(new Random().Next(horizontalTemplates.Count)));
+
+        // var templatesForAdditionalMockup = (dto.IsVertical ? verticalTemplates : horizontalTemplates);
+        templates.Add(horizontalTemplates.ElementAt(new Random().Next(horizontalTemplates.Count)));
+        
+        // Use the provided template ids
+        foreach (var templateId in dto.TemplateIds)
+        {
+            var template = MockupTemplates.GetMockupTemplates().FirstOrDefault(x => x.Id == templateId);
+            if (template != null)
+            {
+                templates.Remove(templates.First(x=>x.Type == template.Type));
+                templates.Add(template);
+            }
+        }
+        
+        return templates;
     }
 }

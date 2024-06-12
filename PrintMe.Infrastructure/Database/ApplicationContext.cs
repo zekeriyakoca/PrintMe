@@ -16,11 +16,15 @@ public class ApplicationContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
-        builder.ApplyConfiguration(new EntitiesCofiguration());
+        builder.ApplyConfiguration(new CatalogItemConfiguration());
+        builder.Entity<CatalogItem>(builder =>
+        {
+            builder.OwnsMany(c => c.ProductImages);
+        });
     }
 }
 
-public class EntitiesCofiguration : IEntityTypeConfiguration<CatalogItem>
+public class CatalogItemConfiguration : IEntityTypeConfiguration<CatalogItem>
 {
     public void Configure(EntityTypeBuilder<CatalogItem> builder)
     {
