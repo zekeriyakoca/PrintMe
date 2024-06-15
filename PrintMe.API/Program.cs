@@ -62,7 +62,7 @@ builder.Services.AddCors(options =>
     options.AddPolicy("AnyOrigin",
         builder =>
         {
-            builder.AllowAnyOrigin()
+            builder.WithOrigins("http://localhost:3000", "https://lemon-hill-0c96b3e03.5.azurestaticapps.net")
                 .AllowAnyHeader()
                 .AllowCredentials()
                 .AllowAnyMethod();
