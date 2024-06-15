@@ -48,7 +48,7 @@ builder.Services.AddSession(opt =>
     opt.IdleTimeout = TimeSpan.FromDays(1);
 }); 
 
-builder.Services.AddSingleton(sp => new QueueClient(builder.Configuration["AzureBlobStorage:ConnectionString"], "images-to-process"));
+builder.Services.AddSingleton(sp => new QueueClient(builder.Configuration["AzureBlobStorageConnectionString"], "images-to-process"));
 
 builder.Services.AddCors(options =>
 {

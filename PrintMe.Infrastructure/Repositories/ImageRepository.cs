@@ -13,8 +13,8 @@ public class ImageRepository : IImageRepository
 
     public ImageRepository(IConfiguration configuration)
     {
-        _blobServiceClient = new BlobServiceClient(configuration["AzureBlobStorage:ConnectionString"]);
-        _containerName = configuration["AzureBlobStorage:ContainerName"];
+        _blobServiceClient = new BlobServiceClient(configuration["AzureBlobStorageConnectionString"]);
+        _containerName = configuration["AzureBlobStorageContainerName"];
     }
 
     public async Task UploadImageAsync(string folderName, Stream imageStream, Stream? imageAlternateStream, Stream? thumbnailStream, Stream? thumbnailAlternateStream, IEnumerable<Stream> otherImageStreams)
