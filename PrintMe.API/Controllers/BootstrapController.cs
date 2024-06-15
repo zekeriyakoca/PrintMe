@@ -10,6 +10,12 @@ public class BootstrapController : BaseController
     public BootstrapController(ILogger<BootstrapController> logger) : base(logger)
     {
     }
+    
+    [HttpGet("/health-check")]
+    public IActionResult HealthCheck()
+    {
+        return Ok();
+    }
 
     [HttpGet("frames")]
     public async Task<ActionResult<IEnumerable<FrameDto>>> GetFrameOptions()

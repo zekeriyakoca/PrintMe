@@ -20,3 +20,7 @@ PrintMe.UnitTests/obj/
 PrintMe.API/appsettings.Production.json
 
 *.user
+
+*.zip
+
+PrintMe.API/publish/
