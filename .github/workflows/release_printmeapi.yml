@@ -62,7 +62,7 @@ jobs:
         with:
           app-name: 'PrintMeAPI'
           slot-name: 'Production'
-          package: .
+          package: ${{env.DOTNET_ROOT}}/myapp 
           
       - name: Set startup command
         run: |
