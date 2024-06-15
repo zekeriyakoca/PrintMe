@@ -1,4 +1,5 @@
 using Azure.Storage.Queues;
+using Microsoft.ApplicationInsights;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Identity.Web;
 using PrintMe.API;
@@ -11,6 +12,8 @@ var builder = WebApplication.CreateBuilder(args);
 builder.AddApplicationServices();
 
 builder.Services.AddControllers();
+
+builder.Services.AddApplicationInsightsTelemetry(builder.Configuration["ApplicationInsights:ConnectionString"]);
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddMicrosoftIdentityWebApi(options =>
@@ -63,6 +66,9 @@ builder.Services.AddCors(options =>
 });
 
 var app = builder.Build();
+
+var telemetryClient = app.Services.GetRequiredService<TelemetryClient>();
+telemetryClient.TrackEvent("Application Started");
 
 // Configure the HTTP request pipeline.
 
