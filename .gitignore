@@ -24,3 +24,5 @@ PrintMe.API/appsettings.Production.json
 *.zip
 
 PrintMe.API/publish/
+
+.vs/
