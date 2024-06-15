@@ -59,10 +59,10 @@ builder.Services.AddSingleton(sp => new QueueClient(builder.Configuration["Azure
 
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("AllowLocalhost",
+    options.AddPolicy("AnyOrigin",
         builder =>
         {
-            builder.WithOrigins("http://localhost:3000","http://localhost:3001")
+            builder.AllowAnyOrigin()
                 .AllowAnyHeader()
                 .AllowCredentials()
                 .AllowAnyMethod();
@@ -80,10 +80,7 @@ telemetryClient.Flush();
 app.UseSwagger();
 app.UseSwaggerUI();
 
-if (app.Environment.IsDevelopment())
-{
-    app.UseCors("AllowLocalhost");
-}
+app.UseCors("AnyOrigin");
 
 app.UseHttpsRedirection();
 
