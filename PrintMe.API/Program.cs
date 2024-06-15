@@ -1,5 +1,6 @@
 using Azure.Storage.Queues;
 using Microsoft.ApplicationInsights;
+using Microsoft.ApplicationInsights.Extensibility;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Identity.Web;
 using PrintMe.API;
@@ -12,7 +13,10 @@ var builder = WebApplication.CreateBuilder(args);
 builder.AddApplicationServices();
 
 builder.Services.AddControllers();
-
+builder.Services.Configure<TelemetryConfiguration>((config) =>
+{
+    config.TelemetryChannel.DeveloperMode = true;
+});
 builder.Services.AddApplicationInsightsTelemetry(builder.Configuration["ApplicationInsights:ConnectionString"]);
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
@@ -84,6 +88,15 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 
 app.UseSession();
+
+app.MapGet("/", (HttpContext context) =>
+{
+    var telemetryClient = context.RequestServices.GetRequiredService<TelemetryClient>();
+    telemetryClient.TrackEvent("Application Started");
+    telemetryClient.Flush();
+
+    return Results.Ok("Event Tracked");
+});
 
 app.MapControllers();
 
