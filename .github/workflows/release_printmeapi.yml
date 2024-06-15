@@ -64,3 +64,7 @@ jobs:
           slot-name: 'Production'
           package: .
           
+      - name: Set startup command
+        run: |
+          az webapp config set --resource-group PrintMe --name PrintMeAPI --startup-file 'dotnet myapp/PrintMe.API.dll'
+          
