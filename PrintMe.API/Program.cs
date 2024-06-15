@@ -69,17 +69,19 @@ var app = builder.Build();
 
 var telemetryClient = app.Services.GetRequiredService<TelemetryClient>();
 telemetryClient.TrackEvent("Application Started");
+telemetryClient.Flush();
 
 // Configure the HTTP request pipeline.
 
+app.UseSwagger();
+app.UseSwaggerUI();
+
 if (app.Environment.IsDevelopment())
 {
-    app.UseSwagger();
-    app.UseSwaggerUI();
     app.UseCors("AllowLocalhost");
 }
 
-// app.UseHttpsRedirection();
+app.UseHttpsRedirection();
 
 app.UseSession();
 
