@@ -18,3 +18,5 @@ PrintMe.UnitTests/bin/
 PrintMe.UnitTests/obj/
 
 PrintMe.API/appsettings.Production.json
+
+*.user
