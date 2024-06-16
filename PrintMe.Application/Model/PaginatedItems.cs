@@ -16,6 +16,7 @@ public class PaginatedItems<TEntity> where TEntity : class
     public int PageSize { get; }
 
     public long Count { get; }
+    public long TotalPage => (long)Math.Ceiling(Count / (double)PageSize);
 
     public IEnumerable<TEntity> Data { get;}
 }

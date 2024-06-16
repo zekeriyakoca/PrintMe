@@ -126,6 +126,7 @@ public class CatalogController : BaseController
         public List<IFormFile>? OtherImages { get; set; } = new List<IFormFile>();
     }
 
+    [Obsolete("Use GenerateProductByImage instead.")]
     [HttpPost("upload-product-images")]
     public async Task<IActionResult> UploadImages([FromForm] UploadProductImagesRequest request)
     {
@@ -160,7 +161,7 @@ public class CatalogController : BaseController
     {
         public IEnumerable<IFormFile> Images { get; set; }
         public CatalogTags? Tag { get; set; }
-        public List<int> TemplateIds { get; set; } = new List<int>();
+        public List<int> TemplateIds { get; } = new ();
         public bool IsVertical { get; set; } = false;
     }
 
@@ -171,11 +172,10 @@ public class CatalogController : BaseController
 
         foreach (var image in dto.Images)
         {
-            string imageId = Guid.NewGuid().ToString();
+            var imageId = Guid.NewGuid().ToString();
             await using var imageStream = image.OpenReadStream();
             var url = await _imageRepository.UploadBlobAsync(imageId, imageStream);
 
-            // Step 2: Create QueueMessageContent object
             var messageContent = new ImageProcessMessage
             {
                 ImageId = imageId,
@@ -185,7 +185,6 @@ public class CatalogController : BaseController
                 MockupTemplates = templates
             };
 
-            // Step 3: Add the message to a processing queue
             await _queueRepository.SendImageProcessMessageAsync(messageContent);
         }
 
@@ -212,10 +211,11 @@ public class CatalogController : BaseController
         foreach (var templateId in dto.TemplateIds)
         {
             var template = MockupTemplates.GetMockupTemplates().FirstOrDefault(x => x.Id == templateId);
-            if (template != null)
+            if (template != null && templates.Any(x=>x.Type == template.Type))
             {
-                templates.Remove(templates.First(x=>x.Type == template.Type));
-                templates.Add(template);
+                var index = templates.FindIndex(x=>x.Type == template.Type) ;
+                templates.RemoveAt(index);
+                templates.Insert(index,template);
             }
         }
         

@@ -9,7 +9,7 @@ public static class MockupTemplates
             new MockupTemplate
             {
                 Id = 1,
-                TemplateImageUrl = "https://genstorageaccount3116.blob.core.windows.net/printme-images/frame1.jpg",
+                TemplateImageUrl = "https://genstorageaccount3116.blob.core.windows.net/print-me-frames/1.jpg",
                 X = 1461,
                 Y = 535,
                 Width = 2541 - 1461,
@@ -29,7 +29,7 @@ public static class MockupTemplates
             new MockupTemplate
             {
                 Id = 3,
-                TemplateImageUrl = "https://genstorageaccount3116.blob.core.windows.net/printme-images/frame3.jpg",
+                TemplateImageUrl = "https://genstorageaccount3116.blob.core.windows.net/print-me-frames/3.jpg",
                 X = 1468,
                 Y = 778,
                 Width = 2534 - 1468,
@@ -77,7 +77,7 @@ public static class MockupTemplates
             new MockupTemplate
             {
                 Id = 11,
-                TemplateImageUrl = "https://genstorageaccount3116.blob.core.windows.net/printme-images/frame11.jpg",
+                TemplateImageUrl = "https://genstorageaccount3116.blob.core.windows.net/print-me-frames/11.jpg",
                 X = 397,
                 Y = 250,
                 Width = 759 - 397,
@@ -87,7 +87,7 @@ public static class MockupTemplates
             new MockupTemplate
             {
                 Id = 12,
-                TemplateImageUrl = "https://genstorageaccount3116.blob.core.windows.net/printme-images/frame12.jpg",
+                TemplateImageUrl = "https://genstorageaccount3116.blob.core.windows.net/print-me-frames/12.jpg",
                 X = 1616,
                 Y = 1430,
                 Width = 3090 - 1616,

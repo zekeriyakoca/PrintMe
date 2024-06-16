@@ -1,9 +1,7 @@
-using Microsoft.AspNetCore.Mvc;
 using PrintMe.Application.Entities;
 using PrintMe.Application.Interfaces;
 using PrintMe.Application.Interfaces.Repositories;
 using PrintMe.Application.Model;
-using PrintMe.Infrastructure.Repositories;
 using Microsoft.EntityFrameworkCore;
 
 namespace PrintMe.API.Services;
@@ -87,6 +85,7 @@ public class CatalogService : ICatalogService
 
         var count = await query.LongCountAsync();
         var items = await query
+            .OrderBy(x=>x.Id)
             .Skip(searchRequest.PageIndex * searchRequest.PageSize)
             .Take(searchRequest.PageSize)
             .Select(x=>new CatalogItemDto(x))
