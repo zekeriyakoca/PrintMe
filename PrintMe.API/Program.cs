@@ -8,11 +8,23 @@ using StackExchange.Redis;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.WebHost.ConfigureKestrel((context, options) =>
+{
+    options.Limits.MaxRequestBodySize = long.MaxValue; 
+});
+
 //Configure services
 
 builder.AddApplicationServices();
 
 builder.Services.AddControllers();
+
+// Configure FormOptions
+builder.Services.Configure<Microsoft.AspNetCore.Http.Features.FormOptions>(options =>
+{
+    options.MultipartBodyLengthLimit = long.MaxValue; 
+});
+
 builder.Services.Configure<TelemetryConfiguration>((config) =>
 {
     config.TelemetryChannel.DeveloperMode = true;
