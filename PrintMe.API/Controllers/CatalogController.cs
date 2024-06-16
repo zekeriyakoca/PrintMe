@@ -168,10 +168,9 @@ public class CatalogController : BaseController
     [HttpPost("generate-product-by-image")]
     public async Task<IActionResult> GenerateProductByImage([FromForm] GenerateProductByImageDto dto)
     {
-        var templates = RetrieveRandomTemplates(dto);
-
         foreach (var image in dto.Images)
         {
+            var templates = RetrieveRandomTemplates(dto);
             var imageId = Guid.NewGuid().ToString();
             await using var imageStream = image.OpenReadStream();
             var url = await _imageRepository.UploadBlobAsync(imageId, imageStream);
