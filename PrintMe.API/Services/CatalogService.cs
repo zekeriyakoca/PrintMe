@@ -75,7 +75,7 @@ public class CatalogService : ICatalogService
         
         if (searchRequest.Category.HasValue)
         {
-            query = query.Where(x => x.Category.HasFlag(searchRequest.Category.Value));
+            query = query.Where(x => (searchRequest.Category.Value & x.Category) > 0);
         }
         
         if (searchRequest.Size.HasValue)
