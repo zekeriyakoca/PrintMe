@@ -107,15 +107,6 @@ app.UseHttpsRedirection();
 
 app.UseSession();
 
-app.MapGet("/", (HttpContext context) =>
-{
-    var telemetryClient = context.RequestServices.GetRequiredService<TelemetryClient>();
-    telemetryClient.TrackEvent("Application Started");
-    telemetryClient.Flush();
-
-    return Results.Ok("Event Tracked");
-});
-
 app.MapControllers();
 
 app.Run();

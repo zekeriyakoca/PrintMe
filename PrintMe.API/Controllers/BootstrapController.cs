@@ -1,3 +1,4 @@
+using Microsoft.ApplicationInsights;
 using Microsoft.AspNetCore.Mvc;
 using PrintMe.Application.Constants;
 using PrintMe.Application.Model;
@@ -12,8 +13,10 @@ public class BootstrapController : BaseController
     }
     
     [HttpGet("/health-check")]
-    public IActionResult HealthCheck()
+    public IActionResult HealthCheck([FromServices] TelemetryClient telemetryClient)
     {
+        telemetryClient.TrackEvent("HealthCheck has been called.");
+        telemetryClient.Flush();
         return Ok();
     }
 
