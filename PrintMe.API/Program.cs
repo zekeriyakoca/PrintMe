@@ -13,6 +13,12 @@ builder.WebHost.ConfigureKestrel((context, options) =>
     options.Limits.MaxRequestBodySize = long.MaxValue; 
 });
 
+// Configure logging from appsettings.json
+builder.Logging.ClearProviders();
+builder.Logging.AddConsole();
+builder.Logging.AddApplicationInsights();
+builder.Logging.AddConfiguration(builder.Configuration.GetSection("Logging"));
+
 //Configure services
 
 builder.AddApplicationServices();
@@ -83,8 +89,11 @@ builder.Services.AddCors(options =>
 
 var app = builder.Build();
 
+var logger = app.Services.GetRequiredService<ILogger<Program>>();
+logger.LogInformation("Application is starting up.");
+
 var telemetryClient = app.Services.GetRequiredService<TelemetryClient>();
-telemetryClient.TrackEvent("Application Started");
+telemetryClient.TrackEvent("TrackEvent: Application is tarting up");
 telemetryClient.Flush();
 
 // Configure the HTTP request pipeline.
