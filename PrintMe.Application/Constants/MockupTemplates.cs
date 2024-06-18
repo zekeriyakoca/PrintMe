@@ -108,10 +108,10 @@ public static class MockupTemplates
             {
                 Id = 14,
                 TemplateImageUrl = "https://genstorageaccount3116.blob.core.windows.net/print-me-frames/14.jpg",
-                X = 922,
-                Y = 1848,
-                Width = 3223 - 922,
-                Height = 4745 - 1848,
+                X = 876,
+                Y = 1795,
+                Width = 3197 - 876,
+                Height = 4731 - 1795,
                 Type = MockupTemplateType.VerticalForVerticalFrame
             },
             new MockupTemplate
