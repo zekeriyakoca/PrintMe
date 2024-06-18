@@ -17,7 +17,7 @@ public class BaseController : ControllerBase
         {
             var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             var email = User.FindFirst(ClaimTypes.Email)?.Value;
-            var name = User.FindFirst(ClaimTypes.Name)?.Value;
+            var name = User.FindFirst("name")?.Value;
 
             if (userId != null && name != null)
             {    
