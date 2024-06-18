@@ -25,9 +25,16 @@ public class BootstrapController : BaseController
     {
         return Ok(BootstrapConstants.FRAMES);
     }
+    
     [HttpGet("sizes")]
     public async Task<ActionResult<IEnumerable<SizeDto>>> GetSizeOptions()
     {
         return Ok(BootstrapConstants.SIZES);
+    }
+    
+    [HttpGet("currentUser")]
+    public ActionResult<UserDetails> GetCurrentUser()
+    {
+        return Ok(CurrentUser);
     }
 }

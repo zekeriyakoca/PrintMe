@@ -15,13 +15,13 @@ public class BaseController : ControllerBase
     protected UserDetails CurrentUser {
         get
         {
-            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            var email = User.FindFirst(ClaimTypes.Email)?.Value;
-            var name = User.FindFirst("name")?.Value;
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var email = User.FindFirstValue(ClaimTypes.Email);
+            var name = User.FindFirstValue("name");
 
             if (userId != null && name != null)
             {    
-                return new UserDetails(userId, name, email); 
+                return new UserDetails(userId, name, email, User.FindFirstValue("picture")); 
             }
 
             var guestInString = HttpContext.Session.GetString("GuestUser");
@@ -30,7 +30,7 @@ public class BaseController : ControllerBase
                 return guest;
             }
 
-            var guestUser = new UserDetails(Guid.NewGuid().ToString(), "Guest", String.Empty);
+            var guestUser = new UserDetails(Guid.NewGuid().ToString(), "Guest", String.Empty, "https://genstorageaccount3116.blob.core.windows.net/printme-images/profile.svg");
             HttpContext.Session.SetString("GuestUser", JsonSerializer.Serialize(guestUser));
             return guestUser;
 

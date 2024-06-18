@@ -1,3 +1,3 @@
 namespace PrintMe.Application.Model;
 
-public record UserDetails(string Id, string UserName, string? Email);
+public record UserDetails(string Id, string UserName, string? Email, string? ProfilePictureUrl);
