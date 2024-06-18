@@ -13,7 +13,7 @@ public static class MockupTemplates
                 X = 1461,
                 Y = 535,
                 Width = 2541 - 1461,
-                Height = 2022 - 535,
+                Height = 2202 - 535,
                 Type = MockupTemplateType.HorizontalForVerticalFrame
             },
             new MockupTemplate
@@ -108,10 +108,10 @@ public static class MockupTemplates
             {
                 Id = 14,
                 TemplateImageUrl = "https://genstorageaccount3116.blob.core.windows.net/print-me-frames/14.jpg",
-                X = 940,
-                Y = 1842,
-                Width = 3215 - 940,
-                Height = 4750 - 1842,
+                X = 922,
+                Y = 1848,
+                Width = 3223 - 922,
+                Height = 4745 - 1848,
                 Type = MockupTemplateType.VerticalForVerticalFrame
             },
             new MockupTemplate
