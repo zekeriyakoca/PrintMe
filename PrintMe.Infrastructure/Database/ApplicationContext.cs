@@ -13,6 +13,7 @@ public class ApplicationContext : DbContext
     }
 
     public DbSet<CatalogItem> CatalogItems { get; set; }
+    public DbSet<Customer> Customers { get; set; }
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
