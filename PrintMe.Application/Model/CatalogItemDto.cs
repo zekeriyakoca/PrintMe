@@ -42,7 +42,7 @@ public class CatalogItemDto
         Name = item.Name;
         Motto = item.Motto;
         Description = item.Description;
-        Price = Convert.ToInt32(item.Price * ((100 - item.SalePercentage.GetValueOrDefault(0)) / 100));
+        Price = item.Price * ((100 - item.SalePercentage.GetValueOrDefault(0)) / 100);
         Category = item.Category;
         CatalogType = item.CatalogType;
         Owner = item.Owner;
