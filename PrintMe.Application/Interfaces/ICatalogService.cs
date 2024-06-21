@@ -9,7 +9,7 @@ public interface ICatalogService
     Task<IEnumerable<CatalogItem>> GetItemsByIds(int[] ids);
     Task<PaginatedItems<CatalogItemDto>> SearchCatalogItems(CatalogItemSearchRequest searchRequest);
     Task<CatalogItemDto?> GetCatalogItem(int id);
-    Task UpdateCatalogItem(CatalogItem catalogItem);
+    Task UpdateCatalogItem(UpdateCatalogItemRequest catalogItem);
     Task CreateCatalogItem(CatalogItem catalogItem);
     ValueTask DeleteCatalogItem(int id);
 }

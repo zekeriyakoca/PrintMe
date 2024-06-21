@@ -5,11 +5,11 @@ using PrintMe.Infrastructure.Database;
 
 namespace PrintMe.Infrastructure.Repositories;
 
-public class CatalogRepository : ICatalogRepository
+public class CatalogRepository : BaseRepository, ICatalogRepository
 {
     private readonly ApplicationContext _context;
 
-    public CatalogRepository(ApplicationContext context)
+    public CatalogRepository(ApplicationContext context): base(context)
     {
         _context = context;
     }

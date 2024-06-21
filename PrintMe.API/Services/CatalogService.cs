@@ -99,9 +99,20 @@ public class CatalogService : ICatalogService
         return new CatalogItemDto(await _catalogRepository.GetCatalogItem(id));
     }
 
-    public async Task UpdateCatalogItem(CatalogItem catalogItem)
+    public async Task UpdateCatalogItem(UpdateCatalogItemRequest catalogItem)
     {
-        await _catalogRepository.UpdateCatalogItem(catalogItem);
+        var entity = await _catalogRepository.GetCatalogItem(catalogItem.Id);
+        if(entity == null)
+        {
+            throw new Exception("Catalog item not found.");
+        }
+        entity.Name = catalogItem.Name;
+        entity.Description = catalogItem.Description;
+        entity.Price = catalogItem.Price;
+        entity.Category = catalogItem.Category;
+        entity.CatalogType = catalogItem.CatalogType;
+        entity.Tags = catalogItem.Tags;
+        await _catalogRepository.SaveChangesAsync();
     }
 
     public async Task CreateCatalogItem(CatalogItem catalogItem)

@@ -79,7 +79,7 @@ public class CatalogController : BaseController
 
     [HttpPut("{id}")]
     [Authorize(Policy = "Admin")]
-    public async Task<IActionResult> UpdateCatalogItem([FromRoute] int id, [FromBody] CatalogItem catalogItem)
+    public async Task<IActionResult> UpdateCatalogItem([FromRoute] int id, [FromBody] UpdateCatalogItemRequest catalogItem)
     {
         if (id != catalogItem.Id)
         {

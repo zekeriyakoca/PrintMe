@@ -1,7 +1,9 @@
 using Microsoft.ApplicationInsights;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using PrintMe.Application.Constants;
 using PrintMe.Application.Model;
+using StackExchange.Redis;
 
 namespace PrintMe.API.Controllers;
 

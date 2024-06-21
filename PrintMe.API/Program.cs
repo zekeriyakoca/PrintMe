@@ -6,6 +6,7 @@ using Microsoft.Identity.Web;
 using Microsoft.IdentityModel.Tokens;
 using PrintMe.API;
 using StackExchange.Redis;
+using System.Security.Claims;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -45,6 +46,23 @@ builder.Services.AddAuthentication(options =>
             ValidateAudience = true,
             ValidAudience = builder.Configuration["GoogleClientId"],
             ValidateLifetime = true
+        };
+        options.Events = new JwtBearerEvents
+        {
+            OnTokenValidated = context =>
+            {
+                var email = context?.Principal?.Claims.FirstOrDefault(x=>x.Type == ClaimTypes.Email);
+
+                var claimsIdentity = context.Principal.Identity as ClaimsIdentity;
+                
+                if (email?.Value == "zekeriyakocairi@gmail.com" || email?.Value == "zehrakocairi@gmail.com")
+                {
+                    claimsIdentity.AddClaim(new Claim("IsAdmin", "true"));
+                    claimsIdentity.AddClaim(new Claim(ClaimTypes.Role, "Admin"));
+                }
+
+                return Task.CompletedTask;
+            }
         };
     });
 

@@ -2,7 +2,7 @@ using PrintMe.Application.Entities;
 
 namespace PrintMe.Application.Interfaces.Repositories;
 
-public interface ICatalogRepository
+public interface ICatalogRepository : IBaseRepository
 {
     IQueryable<CatalogItem> GetCatalogItemsLazily();
     Task<IEnumerable<CatalogItem>> GetCatalogItems();

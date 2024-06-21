@@ -21,7 +21,7 @@ public class BaseController : ControllerBase
 
             if (userId != null && name != null)
             {    
-                return new UserDetails(userId, name, email, User.FindFirstValue("picture")); 
+                return new UserDetails(userId, name, email, User.FindFirstValue("picture"), User.IsInRole("Admin")); 
             }
 
             var guestInString = HttpContext.Session.GetString("GuestUser");
