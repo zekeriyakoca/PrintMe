@@ -24,7 +24,7 @@ public class CatalogItemDto
     public CatalogTags? Tags { get; set; }
 
     // TODO : Implement based on the actual print size
-    public List<PrintSize> Sizes => new List<PrintSize>() { PrintSize.Size13x18, PrintSize.Size21x30, PrintSize.Size30x40, PrintSize.Size40x50, PrintSize.Size50x50, PrintSize.Size70x100 };
+    public List<PrintSize> Sizes => new List<PrintSize>() { PrintSize.Size13x18, PrintSize.Size21x30, PrintSize.Size30x40, PrintSize.Size40x50, PrintSize.Size50x70, PrintSize.Size61x91 };
     
     public int AvailableStock { get; set; }
     

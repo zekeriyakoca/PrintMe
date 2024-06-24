@@ -23,8 +23,8 @@ public static class BootstrapConstants
         new SizeDto((int)PrintSize.Size13x18, "13x18", "Frame for 13x18 cm prints.", 1),
         new SizeDto((int)PrintSize.Size21x30, "21x30", "Frame for 21x30 cm prints.", 1.56),
         new SizeDto((int)PrintSize.Size30x40, "30x40", "Frame for 30x40 cm prints.", 2.67),
-        new SizeDto((int)PrintSize.Size40x50, "40x50", "Frame for 40x50 cm prints.", 4.22),
-        new SizeDto((int)PrintSize.Size50x50, "50x50", "Frame for 50x50 cm prints.", 6.89),
-        new SizeDto((int)PrintSize.Size70x100, "70x100", "Frame for 70x100 cm prints.", 9.65)
+        new SizeDto((int)PrintSize.Size40x50, "40x50", "Frame for 40x50 cm prints.", 3.22),
+        new SizeDto((int)PrintSize.Size50x70, "50x70", "Frame for 50x70 cm prints.", 4.89),
+        new SizeDto((int)PrintSize.Size61x91, "61x91", "Frame for 61x91 cm prints.", 5.65)
     };
 }
