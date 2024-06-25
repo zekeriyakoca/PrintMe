@@ -102,7 +102,7 @@ builder.Services.AddCors(options =>
     options.AddPolicy("AnyOrigin",
         builder =>
         {
-            builder.WithOrigins("http://localhost:3000", "https://lemon-hill-0c96b3e03.5.azurestaticapps.net")
+            builder.WithOrigins("http://localhost:3000", "https://lemon-hill-0c96b3e03.5.azurestaticapps.net", "https://printmeart.nl")
                 .AllowAnyHeader()
                 .AllowCredentials()
                 .AllowAnyMethod();
