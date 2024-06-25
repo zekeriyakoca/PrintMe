@@ -7,6 +7,13 @@ public static class BootstrapConstants
 {
     public static readonly List<FrameDto> FRAMES = new List<FrameDto>
     {
+        new FrameDto(0, "Rolled-up",
+            "Without frame",
+            6, "https://genstorageaccount3116.blob.core.windows.net/print-me-product-images/no-frame.png",
+            "https://genstorageaccount3116.blob.core.windows.net/print-me-product-images/no-frame.png",
+            "https://genstorageaccount3116.blob.core.windows.net/print-me-product-images/no-frame.png",
+            "https://genstorageaccount3116.blob.core.windows.net/print-me-product-images/no-frame.png",
+            new string[]{}),
         new FrameDto(1, "Black Frame | EDSBRUK",
             "This traditional, robust frame has a soft profile and comes in many sizes, perfect for a picture wall.",
             6, "https://www.ikea.com/nl/en/images/products/edsbruk-frame-black-stained__0723741_pe734158_s5.jpg?f=xxs",
