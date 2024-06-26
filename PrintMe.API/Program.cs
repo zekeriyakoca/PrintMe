@@ -95,6 +95,11 @@ builder.Services.AddSession(opt =>
     opt.IdleTimeout = TimeSpan.FromDays(1);
 });
 
+builder.Services.AddResponseCompression(options =>
+{
+    options.EnableForHttps = true;
+});
+
 builder.Services.AddSingleton(sp => new QueueClient(builder.Configuration["AzureBlobStorageConnectionString"], "images-to-process"));
 
 builder.Services.AddCors(options =>
@@ -131,6 +136,8 @@ app.UseSession();
 
 app.UseAuthentication();
 app.UseAuthorization();
+
+app.UseResponseCompression();
 
 app.MapControllers();
 
