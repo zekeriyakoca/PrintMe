@@ -15,7 +15,7 @@ public static class BootstrapConstants
             "https://genstorageaccount3116.blob.core.windows.net/printme-images/roll.jpeg",
             "https://genstorageaccount3116.blob.core.windows.net/print-me-product-images/no-frame.png",
             new string[]{}),
-        new FrameDto(1, "Black Frame | EDSBRUK",
+        new FrameDto(1, "Black | EDSBRUK",
             "This traditional, robust frame has a soft profile and comes in many sizes, perfect for a picture wall.",
             4, "https://www.ikea.com/nl/en/images/products/edsbruk-frame-black-stained__0723741_pe734158_s5.jpg?f=xxs",
             "https://genstorageaccount3116.blob.core.windows.net/printme-images/frame8-edsbruk-mat.png",
@@ -30,7 +30,7 @@ public static class BootstrapConstants
                 "https://www.ikea.com/nl/en/images/products/edsbruk-frame-black-stained__0747489_pe744559_s5.jpg?f=s",
                 "https://www.ikea.com/nl/en/images/products/edsbruk-frame-black-stained__1203360_pe906293_s5.jpg?f=s"
             }),
-        new FrameDto(2, "White Stained Pine Effect | PLOMMONTRÄD",
+        new FrameDto(2, "White Pine | PLOMMONTRÄD",
             "The pattern of PLOMMONTRÄD frame has small variations, making each frame unique – and the slightly wider dimensions...",
             4, "https://www.ikea.com/nl/en/images/products/plommontrad-frame-white-stained-pine-effect__1202413_pe905936_s5.jpg?f=xxs",
             "https://genstorageaccount3116.blob.core.windows.net/printme-images/frame6-plommon-mat.png",
@@ -45,7 +45,7 @@ public static class BootstrapConstants
                 "https://www.ikea.com/nl/en/images/products/plommontrad-frame-white-stained-pine-effect__1203594_pe906362_s5.jpg?f=s",
                 "https://www.ikea.com/nl/en/images/products/edsbruk-frame-white__1203360_pe906293_s5.jpg?f=s"
             }),
-        new FrameDto(3, "White Frame | EDSBRUK",
+        new FrameDto(3, "White | EDSBRUK",
             "This traditional, robust frame has a soft profile and comes in many sizes, perfect for a picture wall.",
             4, "https://www.ikea.com/nl/en/images/products/edsbruk-frame-white__0706506_pe725889_s5.jpg?f=xxs",
             "https://genstorageaccount3116.blob.core.windows.net/printme-images/frame5-edsbruk-mat.png",
@@ -60,7 +60,7 @@ public static class BootstrapConstants
                 "https://www.ikea.com/nl/en/images/products/edsbruk-frame-white__0767914_pe754344_s5.jpg?f=s",
                 "https://www.ikea.com/nl/en/images/products/edsbruk-frame-white__1203360_pe906293_s5.jpg?f=s"
             }),
-        new FrameDto(4, "Brown Frame | RAMSBORG",
+        new FrameDto(4, "Brown | RAMSBORG",
             "Sustainable beauty from sustainably-sourced solid wood, a durable and renewable material that maintains its genuine character with each passing year.", 
             4,
             "https://www.ikea.com/nl/en/images/products/ramsborg-frame-brown__0726700_pe735389_s5.jpg?f=xxs",
@@ -76,7 +76,7 @@ public static class BootstrapConstants
                 "https://www.ikea.com/nl/en/images/products/ramsborg-frame-brown__0919777_ph164133_s5.jpg?f=s",
                 "https://www.ikea.com/nl/en/images/products/edsbruk-frame-white__1203360_pe906293_s5.jpg?f=s"
             }),
-        new FrameDto(5, "Black Frame | RÖDALM", "RÖDALM frame has a modern look that does your favourite motifs justice.",
+        new FrameDto(5, "Black | RÖDALM", "RÖDALM frame has a modern look that does your favourite motifs justice.",
             4,
             "https://www.ikea.com/nl/en/images/products/rodalm-frame-black__1251233_pe924195_s5.jpg?f=xxs",
             "https://genstorageaccount3116.blob.core.windows.net/printme-images/frame1-rodalm-mat.png",
@@ -91,7 +91,7 @@ public static class BootstrapConstants
                 "https://www.ikea.com/nl/en/images/products/rodalm-frame-black__1298259_pe936159_s5.jpg?f=s",
                 "https://www.ikea.com/nl/en/images/products/rodalm-frame-black__1330544_pe945716_s5.jpg?f=s"
             }),
-        new FrameDto(6, "Black Frame | KNOPPANG",
+        new FrameDto(6, "Black | KNOPPANG",
             "Decorate with pictures you love.",
             4, "https://www.ikea.com/nl/en/images/products/knoppang-frame-black__0638249_pe698799_s5.jpg?f=xxs",
             "https://genstorageaccount3116.blob.core.windows.net/printme-images/frame2-knoppang-mat.png",
@@ -106,7 +106,7 @@ public static class BootstrapConstants
                 "https://www.ikea.com/nl/en/images/products/knoppang-frame-black__0939314_ph166069_s5.jpg?f=s",
                 "https://www.ikea.com/nl/en/images/products/knoppang-frame-black__1202391_pe905919_s5.jpg?f=s"
             }),
-        new FrameDto(7, "Gold Frame | SILVERHÖJDEN",
+        new FrameDto(7, "Gold | SILVERHÖJDEN",
             "This frame has a matt metal-like finish and comes in many sizes, perfect for a picture wall.",
             4, "https://www.ikea.com/nl/en/images/products/silverhojden-frame-gold-colour__1179571_pe895993_s5.jpg?f=xxs",
             "https://genstorageaccount3116.blob.core.windows.net/printme-images/frame4-silverhojden-mat.png",
@@ -121,7 +121,7 @@ public static class BootstrapConstants
                 "https://www.ikea.com/nl/en/images/products/silverhojden-frame-gold-colour__1350950_pe951830_s5.jpg?f=xl",
                 "https://www.ikea.com/nl/en/images/products/silverhojden-frame-gold-colour__1202816_pe906101_s5.jpg?f=s"
             }),
-        new FrameDto(8, "Gold Frame | LOMVIKEN",
+        new FrameDto(8, "Gold | LOMVIKEN",
             "Decorate with pictures you love. ",
             4, "https://www.ikea.com/nl/en/images/products/lomviken-frame-gold-colour__0661072_pe711302_s5.jpg?f=xxs",
             "https://genstorageaccount3116.blob.core.windows.net/printme-images/frame3-lomviken-mat.png",

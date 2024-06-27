@@ -145,16 +145,16 @@ public static class MockupTemplates
                 Height = 1384 - 314,
                 Type = MockupTemplateType.VerticalForVerticalFrame
             },
-            new MockupTemplate
-            {
-                Id = 17,
-                TemplateImageUrl = "https://genstorageaccount3116.blob.core.windows.net/print-me-frames/17.webp",
-                X = 314,
-                Y = 304,
-                Width = 1142 - 314,
-                Height = 1426 - 304,
-                Type = MockupTemplateType.VerticalForVerticalFrame
-            },
+            // new MockupTemplate
+            // {
+            //     Id = 17,
+            //     TemplateImageUrl = "https://genstorageaccount3116.blob.core.windows.net/print-me-frames/17.webp",
+            //     X = 314,
+            //     Y = 304,
+            //     Width = 1142 - 314,
+            //     Height = 1426 - 304,
+            //     Type = MockupTemplateType.VerticalForVerticalFrame
+            // },
             new MockupTemplate
             {
                 Id = 18,
@@ -162,7 +162,7 @@ public static class MockupTemplates
                 X = 350,
                 Y = 308,
                 Width = 1129 - 350,
-                Height = 1391 - 308,
+                Height = 1394 - 308,
                 Type = MockupTemplateType.VerticalForVerticalFrame
             },
             new MockupTemplate
