@@ -116,7 +116,7 @@ public class CatalogService : ICatalogService
             .OrderBy(x=>x.Id)
             .Skip(searchRequest.PageIndex * searchRequest.PageSize)
             .Take(searchRequest.PageSize)
-            .Select(x=>new CatalogItemDto(x))
+            .Select(x=> CatalogItemDto.FromCatalogItem(x))
             .ToListAsync();
 
         return new PaginatedItems<CatalogItemDto>(searchRequest.PageIndex, searchRequest.PageSize, count, items);
@@ -124,7 +124,7 @@ public class CatalogService : ICatalogService
 
     public async Task<CatalogItemDto?> GetCatalogItem(int id)
     {
-        return new CatalogItemDto(await _catalogRepository.GetCatalogItem(id) ?? throw new GenericNotFoundException("Catalog item not found."));
+        return CatalogItemDto.FromCatalogItem(await _catalogRepository.GetCatalogItem(id) ?? throw new GenericNotFoundException("Catalog item not found."));
     }
 
     public async Task UpdateCatalogItem(UpdateCatalogItemRequest catalogItem)

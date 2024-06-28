@@ -1,3 +1,4 @@
+using System.Text.Json.Serialization;
 using PrintMe.Application.Entities;
 using PrintMe.Application.Enums;
 
@@ -36,29 +37,52 @@ public class CatalogItemDto
     public string Rating => "";
     public int NumberOfReviews => 0;
 
-    public CatalogItemDto(CatalogItem item)
+    // Parameterless constructor needed for deserialization
+    public CatalogItemDto() {}
+
+    [JsonConstructor]
+    public CatalogItemDto(int id, string name, string motto, string description, string owner, decimal price, Category category, CatalogType catalogType, CatalogTags? tags, int availableStock, int? salePercentage, List<ImageDto> images)
     {
-        Id = item.Id;
-        Name = item.Name;
-        Motto = item.Motto;
-        Description = item.Description;
-        Price = item.Price * ((100 - item.SalePercentage.GetValueOrDefault(0)) / 100);
-        Category = item.Category;
-        CatalogType = item.CatalogType;
-        Owner = item.Owner;
-        Tags = item.Tags;
-        AvailableStock = item.AvailableStock;
-        SalePercentage = item.SalePercentage;
-        Images = new List<ImageDto>()
-        {
-            new ImageDto(GetImageBaseUrl(item.PictureFileName, ".jpeg"), GetImageBaseUrl(item.PictureFileName, "-thumbnail.jpeg")),
-            new ImageDto(GetImageBaseUrl(item.PictureFileName, "-mockup1.jpeg"), GetImageBaseUrl(item.PictureFileName, "-mockup1-thumbnail.jpeg")),
-            new ImageDto(GetImageBaseUrl(item.PictureFileName, "-mockup2.jpeg"), GetImageBaseUrl(item.PictureFileName, "-mockup2-thumbnail.jpeg")),
-            new ImageDto(GetImageBaseUrl(item.PictureFileName, "-mockup3.jpeg"), GetImageBaseUrl(item.PictureFileName, "-mockup3-thumbnail.jpeg"))
-        };
+        Id = id;
+        Name = name;
+        Motto = motto;
+        Description = description;
+        Owner = owner;
+        Price = price;
+        Category = category;
+        CatalogType = catalogType;
+        Tags = tags;
+        AvailableStock = availableStock;
+        SalePercentage = salePercentage;
+        Images = images ?? new List<ImageDto>();
+    }
+
+    // Example method to convert from CatalogItem to CatalogItemDto
+    public static CatalogItemDto FromCatalogItem(CatalogItem item)
+    {
+        return new CatalogItemDto(
+            item.Id,
+            item.Name,
+            item.Motto,
+            item.Description,
+            item.Owner,
+            item.Price * ((100 - item.SalePercentage.GetValueOrDefault(0)) / 100),
+            item.Category,
+            item.CatalogType,
+            item.Tags,
+            item.AvailableStock,
+            item.SalePercentage,
+            new List<ImageDto>
+            {
+                new ImageDto(GetImageBaseUrl(item.PictureFileName, ".jpeg"), GetImageBaseUrl(item.PictureFileName, "-thumbnail.jpeg")),
+                new ImageDto(GetImageBaseUrl(item.PictureFileName, "-mockup1.jpeg"), GetImageBaseUrl(item.PictureFileName, "-mockup1-thumbnail.jpeg")),
+                new ImageDto(GetImageBaseUrl(item.PictureFileName, "-mockup2.jpeg"), GetImageBaseUrl(item.PictureFileName, "-mockup2-thumbnail.jpeg")),
+                new ImageDto(GetImageBaseUrl(item.PictureFileName, "-mockup3.jpeg"), GetImageBaseUrl(item.PictureFileName, "-mockup3-thumbnail.jpeg"))
+            }
+        );
     }
     
-    private string GetImageBaseUrl(string imageId, string suffix)
+    private static string GetImageBaseUrl(string imageId, string suffix)
     {
         return $"https://genstorageaccount3116.blob.core.windows.net/printme-processed-images/{imageId}/{imageId}{suffix}";
     }
