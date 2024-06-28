@@ -1,8 +1,10 @@
+using System.Text.Json;
 using PrintMe.Application.Entities;
 using PrintMe.Application.Interfaces;
 using PrintMe.Application.Interfaces.Repositories;
 using PrintMe.Application.Model;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Caching.Distributed;
 using PrintMe.Application.DomainExceptions;
 
 namespace PrintMe.API.Services;
@@ -10,10 +12,12 @@ namespace PrintMe.API.Services;
 public class CatalogService : ICatalogService
 {
     private readonly ICatalogRepository _catalogRepository;
+    private readonly IDistributedCache _cache;
 
-    public CatalogService(ICatalogRepository catalogRepository)
+    public CatalogService(ICatalogRepository catalogRepository, IDistributedCache cache)
     {
         _catalogRepository = catalogRepository;
+        _cache = cache;
     }
 
     // TODO : Refactor here to return DTO
@@ -44,6 +48,25 @@ public class CatalogService : ICatalogService
     
     // TODO : Refactor here to return DTO
     public async Task<PaginatedItems<CatalogItemDto>> SearchCatalogItems(CatalogItemSearchRequest searchRequest)
+    {
+        var cacheKey = searchRequest.GetHashCode().ToString();
+        var cachedResult = await _cache.GetStringAsync(cacheKey);
+        if(!string.IsNullOrEmpty(cachedResult))
+        {
+            var cachedItems = JsonSerializer.Deserialize<PaginatedItems<CatalogItemDto>>(cachedResult);
+            if (cachedItems != null)
+            {
+                return cachedItems;
+            }
+        }
+        
+        var result = await SearchCatalogItems_DoWork(searchRequest);
+        await _cache.SetStringAsync(cacheKey, JsonSerializer.Serialize(result), new DistributedCacheEntryOptions() { AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(5)});
+
+        return result;
+    }
+    
+    private async Task<PaginatedItems<CatalogItemDto>> SearchCatalogItems_DoWork(CatalogItemSearchRequest searchRequest)
     {
         var query = _catalogRepository.GetCatalogItemsLazily();
         
