@@ -35,7 +35,7 @@ public class CatalogController : BaseController
     [HttpPost("items-by-ids")]
     public async Task<ActionResult> GetCatalogItems([FromBody] int[] ids)
     {
-        if (!ids.Any())
+        if (ids.Length.Equals(0))
         {
             return BadRequest("No id provided.");
         }

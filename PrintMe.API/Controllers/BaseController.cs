@@ -10,7 +10,7 @@ namespace PrintMe.API.Controllers;
 [ApiController]
 public class BaseController : ControllerBase
 {
-    public ILogger Logger { get; }
+    protected ILogger Logger { get; }
 
     protected UserDetails CurrentUser {
         get

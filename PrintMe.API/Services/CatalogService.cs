@@ -3,6 +3,7 @@ using PrintMe.Application.Interfaces;
 using PrintMe.Application.Interfaces.Repositories;
 using PrintMe.Application.Model;
 using Microsoft.EntityFrameworkCore;
+using PrintMe.Application.DomainExceptions;
 
 namespace PrintMe.API.Services;
 
@@ -15,9 +16,10 @@ public class CatalogService : ICatalogService
         _catalogRepository = catalogRepository;
     }
 
+    // TODO : Refactor here to return DTO
     public async Task<PaginatedItems<CatalogItem>> GetCatalogItems(PaginationRequest paginationRequest)
     {
-        var totalItems =  _catalogRepository.GetCatalogItemsLazily().Count();
+        var totalItemsCount =  _catalogRepository.GetCatalogItemsLazily().Count();
         
         var items =  await _catalogRepository.GetCatalogItemsLazily()
             .OrderBy(c => c.Name)
@@ -25,11 +27,12 @@ public class CatalogService : ICatalogService
             .Take(paginationRequest.PageSize)
             .ToListAsync();
         
-        var result = new PaginatedItems<CatalogItem>(paginationRequest.PageIndex, paginationRequest.PageSize, totalItems, items);
+        var result = new PaginatedItems<CatalogItem>(paginationRequest.PageIndex, paginationRequest.PageSize, totalItemsCount, items);
         
         return result;
     }
     
+    // TODO : Refactor here to return DTO
     public async Task<IEnumerable<CatalogItem>> GetItemsByIds(int[] ids)
     {
         var items =  await _catalogRepository.GetCatalogItemsLazily()
@@ -38,6 +41,8 @@ public class CatalogService : ICatalogService
         
         return items;
     }
+    
+    // TODO : Refactor here to return DTO
     public async Task<PaginatedItems<CatalogItemDto>> SearchCatalogItems(CatalogItemSearchRequest searchRequest)
     {
         var query = _catalogRepository.GetCatalogItemsLazily();
@@ -96,7 +101,7 @@ public class CatalogService : ICatalogService
 
     public async Task<CatalogItemDto?> GetCatalogItem(int id)
     {
-        return new CatalogItemDto(await _catalogRepository.GetCatalogItem(id));
+        return new CatalogItemDto(await _catalogRepository.GetCatalogItem(id) ?? throw new GenericNotFoundException("Catalog item not found."));
     }
 
     public async Task UpdateCatalogItem(UpdateCatalogItemRequest catalogItem)

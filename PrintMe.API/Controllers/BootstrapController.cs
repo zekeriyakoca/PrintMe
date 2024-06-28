@@ -19,7 +19,7 @@ public class BootstrapController : BaseController
     {
         telemetryClient.TrackEvent("HealthCheck has been called.");
         telemetryClient.Flush();
-        return Ok();
+        return Ok("I'm alive!");
     }
 
     [HttpGet("frames")]

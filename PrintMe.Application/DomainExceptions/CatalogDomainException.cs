@@ -1,6 +1,6 @@
 namespace PrintMe.Application.DomainExceptions;
 
-public class CatalogDomainException : Exception
+public class CatalogDomainException : BussinessException
 {
     public CatalogDomainException(string message) : base(message)
     {

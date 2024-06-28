@@ -1,3 +1,5 @@
+using System.Text.Json;
+using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using PrintMe.Application.Entities;
@@ -9,11 +11,11 @@ public class CustomerController : BaseController
 {
     private readonly ICustomerRepository _customerRepository;
 
-    public CustomerController(ILogger<CustomerController> logger, ICustomerRepository customerRepository ) : base(logger)
+    public CustomerController(ILogger<CustomerController> logger, ICustomerRepository customerRepository) : base(logger)
     {
         _customerRepository = customerRepository;
     }
-    
+
     [HttpGet]
     public async Task<ActionResult<Customer>> GetCustomer()
     {
@@ -31,18 +33,13 @@ public class CustomerController : BaseController
 
         return Ok(customer);
     }
-    
+
     [HttpPut("{id}")]
     public async Task<ActionResult> UpdateCustomer([FromRoute] string id, [FromBody] Customer customer)
     {
         if (string.IsNullOrWhiteSpace(id))
         {
             return BadRequest("Id is not valid.");
-        }
-
-        if (customer == null)
-        {
-            return BadRequest("Customer is not valid.");
         }
 
         if (id != customer.Id)
@@ -54,9 +51,9 @@ public class CustomerController : BaseController
 
         return Ok();
     }
-    
+
     [HttpPost]
-    [Authorize(Policy="User")]
+    [Authorize(Policy = "User")]
     public async Task<ActionResult> CreateCustomer()
     {
         if (await _customerRepository.Exist(CurrentUser.Id))
@@ -64,11 +61,17 @@ public class CustomerController : BaseController
             return Ok();
         }
 
+        if (CurrentUser.Email == null)
+        {
+            Logger.LogError("User does not have an email address. User: {user}", JsonSerializer.Serialize(CurrentUser));
+            return BadRequest("User could not be created!");
+        }
+
         var customer = new Customer()
         {
             Id = CurrentUser.Id,
             FullName = CurrentUser.UserName,
-            Email = CurrentUser.Email,
+            Email = CurrentUser.Email ?? string.Empty,
             ProfilePictureUrl = CurrentUser.ProfilePictureUrl
         };
         await _customerRepository.CreateCustomer(customer);

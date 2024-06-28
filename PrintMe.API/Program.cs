@@ -7,6 +7,7 @@ using Microsoft.IdentityModel.Tokens;
 using PrintMe.API;
 using StackExchange.Redis;
 using System.Security.Claims;
+using PrintMe.API.Middlewares;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -115,6 +116,10 @@ builder.Services.AddCors(options =>
 });
 
 var app = builder.Build();
+
+
+app.UseMiddleware<GlobalExceptionMiddleware>();
+
 
 var logger = app.Services.GetRequiredService<ILogger<Program>>();
 logger.LogInformation("Application is starting up.");
