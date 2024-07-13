@@ -73,7 +73,7 @@ public class CatalogService : ICatalogService
         if (!string.IsNullOrEmpty(searchRequest.SearchTerm))
         {
             // TODO : Implement free text search and, then, search utilizing AI
-            query = query.Where(x => x.Name.Contains(searchRequest.SearchTerm) || x.Description.Contains(searchRequest.SearchTerm) || x.Owner.Contains(searchRequest.SearchTerm) || x.SearchParameters.Contains(searchRequest.SearchTerm));
+            query = query.Where(x => x.Name.Contains(searchRequest.SearchTerm) || x.Description.Contains(searchRequest.SearchTerm) || x.Motto.Contains(searchRequest.SearchTerm) || x.Owner.Contains(searchRequest.SearchTerm) || x.SearchParameters.Contains(searchRequest.SearchTerm));
         }
         
         if (searchRequest.PriceFrom.HasValue)
