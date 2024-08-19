@@ -27,6 +27,11 @@ public class CatalogRepository : BaseRepository, ICatalogRepository
     {
         return await _context.CatalogItems.FirstOrDefaultAsync(x=> x.Id == id);
     }
+    
+    public async Task<CatalogItem?> GetCatalogItemByName(string productName)
+    {
+        return await _context.CatalogItems.FirstOrDefaultAsync(x=> x.Name == productName);
+    }
 
     public Task UpdateCatalogItem(CatalogItem catalogItem)
     {

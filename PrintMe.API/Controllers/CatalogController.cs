@@ -61,6 +61,19 @@ public class CatalogController : BaseController
 
         return Ok(catalogItem);
     }
+    
+    [HttpGet("custom-product")]
+    public async Task<ActionResult<CatalogItem>> GetCustomCatalogItem()
+    {
+        var customProduct = await _catalogService.GetCustomCatalogItem();
+
+        if (customProduct == null)
+        {
+            return NotFound();
+        }
+
+        return Ok(customProduct);
+    }
 
     [HttpPost("search")]
     public async Task<ActionResult> SearchCatalogItems([FromBody] CatalogItemSearchRequest searchRequest)

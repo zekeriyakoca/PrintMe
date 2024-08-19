@@ -126,6 +126,12 @@ public class CatalogService : ICatalogService
     {
         return CatalogItemDto.FromCatalogItem(await _catalogRepository.GetCatalogItem(id) ?? throw new GenericNotFoundException("Catalog item not found."));
     }
+    
+    // TODO : Refactor here
+    public async Task<CatalogItemDto?> GetCustomCatalogItem()
+    {
+        return CatalogItemDto.FromCatalogItem(await _catalogRepository.GetCatalogItemByName("Custom Product") ?? throw new GenericNotFoundException("Custom product not found."));
+    }
 
     public async Task UpdateCatalogItem(UpdateCatalogItemRequest catalogItem)
     {
