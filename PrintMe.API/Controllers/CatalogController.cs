@@ -16,12 +16,15 @@ public class CatalogController : BaseController
     private readonly ICatalogService _catalogService;
     private readonly IImageRepository _imageRepository;
     private readonly IQueueRepository _queueRepository;
+    private readonly IConfiguration _configuration;
 
-    public CatalogController(ILogger<CatalogController> logger, ICatalogService catalogService, IImageRepository imageRepository, IQueueRepository queueRepository) : base(logger)
+    public CatalogController(ILogger<CatalogController> logger, ICatalogService catalogService, IImageRepository imageRepository, IQueueRepository queueRepository,
+        IConfiguration configuration) : base(logger)
     {
         _catalogService = catalogService;
         _imageRepository = imageRepository;
         _queueRepository = queueRepository;
+        _configuration = configuration;
     }
 
     [HttpGet]
@@ -44,6 +47,42 @@ public class CatalogController : BaseController
         return Ok(items);
     }
 
+    public class UploadCustomProductImageRequest
+    {
+        public IFormFile Image { get; set; }
+    }
+
+    [HttpPost("custom-product/upload-image")]
+    public async Task<ActionResult> UploadCustomProductImage([FromForm] UploadCustomProductImageRequest dto)
+    {
+        if (dto?.Image == null || dto.Image.Length == 0)
+        {
+            return BadRequest("No file uploaded.");
+        }
+
+        if (dto.Image.Length > 50 * 1024 * 1024)
+        {
+            return BadRequest("File size is too large.");
+        }
+
+        if (dto.Image.ContentType != "image/jpeg" && dto.Image.ContentType != "image/png")
+        {
+            return BadRequest("Invalid file type.");
+        }
+
+        var imageId = Guid.NewGuid().ToString();
+        await using var imageStream = dto.Image.OpenReadStream();
+        // TODO : Introduce a Image service and hide the implementation details
+        var customerImagesContainer = _configuration["AzureBlobStorageCustomProductImagesContainerName"];
+        if (string.IsNullOrWhiteSpace(customerImagesContainer))
+        {
+            return StatusCode(500, "Server error!");
+        }
+
+        var url = await _imageRepository.UploadBlobAsync(imageId, customerImagesContainer, imageStream);
+        return Ok(url);
+    }
+
     [HttpGet("{id}")]
     public async Task<ActionResult<CatalogItem>> GetCatalogItem([FromRoute] int id)
     {
@@ -61,7 +100,7 @@ public class CatalogController : BaseController
 
         return Ok(catalogItem);
     }
-    
+
     [HttpGet("custom-product")]
     public async Task<ActionResult<CatalogItem>> GetCustomCatalogItem()
     {
@@ -122,13 +161,6 @@ public class CatalogController : BaseController
         return NoContent();
     }
 
-    [HttpGet("/test")]
-    [Authorize(Policy = "User")]
-    public IActionResult AuthorizationTest()
-    {
-        return Ok();
-    }
-
     public class UploadProductImagesRequest
     {
         public string FolderName { get; set; }
@@ -139,7 +171,7 @@ public class CatalogController : BaseController
         public List<IFormFile>? OtherImages { get; set; } = new List<IFormFile>();
     }
 
-    [Obsolete("Use GenerateProductByImage instead.")]
+    [Obsolete($"Use {nameof(GenerateProductByImage)} instead.")]
     [HttpPost("upload-product-images")]
     public async Task<IActionResult> UploadImages([FromForm] UploadProductImagesRequest request)
     {
@@ -163,18 +195,11 @@ public class CatalogController : BaseController
         return Ok("Images uploaded successfully.");
     }
 
-    [HttpGet("get-image-urls")]
-    public async Task<IActionResult> GetImageUrls([FromQuery] string folderName)
-    {
-        var imagesDto = await _imageRepository.GetImageUrlsAsync(folderName);
-        return Ok(imagesDto);
-    }
-
     public class GenerateProductByImageDto
     {
         public IEnumerable<IFormFile> Images { get; set; }
         public CatalogTags? Tag { get; set; }
-        public List<int> TemplateIds { get; } = new ();
+        public List<int> TemplateIds { get; } = new();
         public bool IsVertical { get; set; } = false;
     }
 
@@ -218,19 +243,19 @@ public class CatalogController : BaseController
 
         // var templatesForAdditionalMockup = (dto.IsVertical ? verticalTemplates : horizontalTemplates);
         templates.Add(horizontalTemplates.ElementAt(new Random().Next(horizontalTemplates.Count)));
-        
+
         // Use the provided template ids
         foreach (var templateId in dto.TemplateIds)
         {
             var template = MockupTemplates.GetMockupTemplates().FirstOrDefault(x => x.Id == templateId);
-            if (template != null && templates.Any(x=>x.Type == template.Type))
+            if (template != null && templates.Any(x => x.Type == template.Type))
             {
-                var index = templates.FindIndex(x=>x.Type == template.Type) ;
+                var index = templates.FindIndex(x => x.Type == template.Type);
                 templates.RemoveAt(index);
-                templates.Insert(index,template);
+                templates.Insert(index, template);
             }
         }
-        
+
         return templates;
     }
 }
