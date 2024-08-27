@@ -204,6 +204,7 @@ public class CatalogController : BaseController
     }
 
     [HttpPost("generate-product-by-image")]
+    [RequestSizeLimit(104857600)] // 100 MB in bytes
     public async Task<IActionResult> GenerateProductByImage([FromForm] GenerateProductByImageDto dto)
     {
         foreach (var image in dto.Images)
