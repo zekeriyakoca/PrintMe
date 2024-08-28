@@ -15,7 +15,7 @@ public class OrderService : IOrderService
         _context = context;
     }
     
-    public async Task CreateDraftOrderAsync(CreateOrderRequest dto)
+    public async Task CreateDraftOrderAsync(CreateOrderRequestDto dto)
     {
         throw new NotImplementedException();
     }

@@ -3,7 +3,7 @@ using PrintMe.Application.Enums;
 
 namespace PrintMe.Application.Model;
 
-public class UpdateCatalogItemRequest
+public class UpdateCatalogItemRequestDto
 {
     public int Id { get; set; }
     [MaxLength(50)]

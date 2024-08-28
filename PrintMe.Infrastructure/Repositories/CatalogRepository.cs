@@ -37,15 +37,4 @@ public class CatalogRepository : BaseRepository, ICatalogRepository
     {
         throw new NotImplementedException();
     }
-
-    public Task CreateCatalogItem(CatalogItem catalogItem)
-    {
-        _context.CatalogItems.Add(catalogItem);
-        return _context.SaveChangesAsync();
-    }
-
-    public void DeleteCatalogItem(int id)
-    {
-        _context.CatalogItems.Remove(new CatalogItem { Id = id });
-    }
 }

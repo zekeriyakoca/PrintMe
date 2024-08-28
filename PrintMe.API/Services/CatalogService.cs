@@ -5,6 +5,7 @@ using PrintMe.Application.Interfaces.Repositories;
 using PrintMe.Application.Model;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Distributed;
+using PrintMe.Application.Constants;
 using PrintMe.Application.DomainExceptions;
 
 namespace PrintMe.API.Services;
@@ -20,36 +21,36 @@ public class CatalogService : ICatalogService
         _cache = cache;
     }
 
-    // TODO : Refactor here to return DTO
-    public async Task<PaginatedItems<CatalogItem>> GetCatalogItems(PaginationRequest paginationRequest)
+    public async Task<PaginatedItems<CatalogItemDto>> GetCatalogItems(PaginationRequestDto paginationRequestDto)
     {
         var totalItemsCount =  _catalogRepository.GetCatalogItemsLazily().Count();
         
-        var items =  await _catalogRepository.GetCatalogItemsLazily()
+        var items = await _catalogRepository.GetCatalogItemsLazily()
             .OrderBy(c => c.Name)
-            .Skip(paginationRequest.PageIndex * paginationRequest.PageSize)
-            .Take(paginationRequest.PageSize)
+            .Where(x => x.Name != ApplicationConstants.CUSTOM_PRODUCT_NAME)
+            .Skip(paginationRequestDto.PageIndex * paginationRequestDto.PageSize)
+            .Take(paginationRequestDto.PageSize)
+            .Select(x=> CatalogItemDto.FromCatalogItem(x))
             .ToListAsync();
         
-        var result = new PaginatedItems<CatalogItem>(paginationRequest.PageIndex, paginationRequest.PageSize, totalItemsCount, items);
+        var result = new PaginatedItems<CatalogItemDto>(paginationRequestDto.PageIndex, paginationRequestDto.PageSize, totalItemsCount, items);
         
         return result;
     }
     
-    // TODO : Refactor here to return DTO
-    public async Task<IEnumerable<CatalogItem>> GetItemsByIds(int[] ids)
+    public async Task<IEnumerable<CatalogItemDto>> GetItemsByIds(int[] ids)
     {
         var items =  await _catalogRepository.GetCatalogItemsLazily()
-            .Where(x => ids.Contains(x.Id))
+            .Select(x=> CatalogItemDto.FromCatalogItem(x))
+            .Where(x=> ids.Contains(x.Id) && x.Name != ApplicationConstants.CUSTOM_PRODUCT_NAME)
             .ToListAsync();
         
         return items;
     }
     
-    // TODO : Refactor here to return DTO
-    public async Task<PaginatedItems<CatalogItemDto>> SearchCatalogItems(CatalogItemSearchRequest searchRequest)
+    public async Task<PaginatedItems<CatalogItemDto>> SearchCatalogItems(CatalogItemSearchRequestDto searchRequestDto)
     {
-        var cacheKey = searchRequest.GetHashCode().ToString();
+        var cacheKey = searchRequestDto.GetHashCode().ToString();
         var cachedResult = await _cache.GetStringAsync(cacheKey);
         if(!string.IsNullOrEmpty(cachedResult))
         {
@@ -60,66 +61,67 @@ public class CatalogService : ICatalogService
             }
         }
         
-        var result = await SearchCatalogItems_DoWork(searchRequest);
+        var result = await SearchCatalogItems_DoWork(searchRequestDto);
         await _cache.SetStringAsync(cacheKey, JsonSerializer.Serialize(result), new DistributedCacheEntryOptions() { AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(5)});
 
         return result;
     }
     
-    private async Task<PaginatedItems<CatalogItemDto>> SearchCatalogItems_DoWork(CatalogItemSearchRequest searchRequest)
+    private async Task<PaginatedItems<CatalogItemDto>> SearchCatalogItems_DoWork(CatalogItemSearchRequestDto searchRequestDto)
     {
         var query = _catalogRepository.GetCatalogItemsLazily();
         
-        if (!string.IsNullOrEmpty(searchRequest.SearchTerm))
+        if (!string.IsNullOrEmpty(searchRequestDto.SearchTerm))
         {
             // TODO : Implement free text search and, then, search utilizing AI
-            query = query.Where(x => x.Name.Contains(searchRequest.SearchTerm) || x.Description.Contains(searchRequest.SearchTerm) || x.Motto.Contains(searchRequest.SearchTerm) || x.Owner.Contains(searchRequest.SearchTerm) || x.SearchParameters.Contains(searchRequest.SearchTerm));
+            query = query.Where(x => x.Name.Contains(searchRequestDto.SearchTerm) || x.Description.Contains(searchRequestDto.SearchTerm) || x.Motto.Contains(searchRequestDto.SearchTerm) || x.Owner.Contains(searchRequestDto.SearchTerm) || x.SearchParameters.Contains(searchRequestDto.SearchTerm));
         }
         
-        if (searchRequest.PriceFrom.HasValue)
+        if (searchRequestDto.PriceFrom.HasValue)
         {
-            query = query.Where(x => x.Price >= searchRequest.PriceFrom);
+            query = query.Where(x => x.Price >= searchRequestDto.PriceFrom);
         }
         
-        if (searchRequest.PriceTo.HasValue)
+        if (searchRequestDto.PriceTo.HasValue)
         {
-            query = query.Where(x => x.Price <= searchRequest.PriceTo);
+            query = query.Where(x => x.Price <= searchRequestDto.PriceTo);
         }
         
-        if (searchRequest.IsOnlyAvailableItems)
+        if (searchRequestDto.IsOnlyAvailableItems)
         {
             query = query.Where(x => x.AvailableStock > 0);
         }
         
-        if (searchRequest.Tags.HasValue)
+        if (searchRequestDto.Tags.HasValue)
         {
-            query = query.Where(x => x.Tags.HasValue && x.Tags.Value.HasFlag(searchRequest.Tags.Value));
+            query = query.Where(x => x.Tags.HasValue && x.Tags.Value.HasFlag(searchRequestDto.Tags.Value));
         }
         
-        if (searchRequest.Type.HasValue)
+        if (searchRequestDto.Type.HasValue)
         {
-            query = query.Where(x => x.CatalogType.HasFlag(searchRequest.Type.Value));
+            query = query.Where(x => x.CatalogType.HasFlag(searchRequestDto.Type.Value));
         }
         
-        if (searchRequest.Category.HasValue)
+        if (searchRequestDto.Category.HasValue)
         {
-            query = query.Where(x => (searchRequest.Category.Value & x.Category) > 0);
+            query = query.Where(x => (searchRequestDto.Category.Value & x.Category) > 0);
         }
         
-        if (searchRequest.Size.HasValue)
+        if (searchRequestDto.Size.HasValue)
         {
-            query = query.Where(x => x.Size == searchRequest.Size);
+            query = query.Where(x => x.Size == searchRequestDto.Size);
         }
 
         var count = await query.LongCountAsync();
         var items = await query
             .OrderBy(x=>x.Id)
-            .Skip(searchRequest.PageIndex * searchRequest.PageSize)
-            .Take(searchRequest.PageSize)
+            .Where(x => x.Name != ApplicationConstants.CUSTOM_PRODUCT_NAME)
+            .Skip(searchRequestDto.PageIndex * searchRequestDto.PageSize)
+            .Take(searchRequestDto.PageSize)
             .Select(x=> CatalogItemDto.FromCatalogItem(x))
             .ToListAsync();
 
-        return new PaginatedItems<CatalogItemDto>(searchRequest.PageIndex, searchRequest.PageSize, count, items);
+        return new PaginatedItems<CatalogItemDto>(searchRequestDto.PageIndex, searchRequestDto.PageSize, count, items);
     }
 
     public async Task<CatalogItemDto?> GetCatalogItem(int id)
@@ -130,10 +132,10 @@ public class CatalogService : ICatalogService
     // TODO : Refactor here
     public async Task<CatalogItemDto?> GetCustomCatalogItem()
     {
-        return CatalogItemDto.FromCatalogItem(await _catalogRepository.GetCatalogItemByName("Custom Product") ?? throw new GenericNotFoundException("Custom product not found."));
+        return CatalogItemDto.FromCatalogItem(await _catalogRepository.GetCatalogItemByName(ApplicationConstants.CUSTOM_PRODUCT_NAME) ?? throw new GenericNotFoundException("Custom product not found."));
     }
 
-    public async Task UpdateCatalogItem(UpdateCatalogItemRequest catalogItem)
+    public async Task UpdateCatalogItem(UpdateCatalogItemRequestDto catalogItem)
     {
         var entity = await _catalogRepository.GetCatalogItem(catalogItem.Id);
         if(entity == null)
@@ -147,16 +149,5 @@ public class CatalogService : ICatalogService
         entity.CatalogType = catalogItem.CatalogType;
         entity.Tags = catalogItem.Tags;
         await _catalogRepository.SaveChangesAsync();
-    }
-
-    public async Task CreateCatalogItem(CatalogItem catalogItem)
-    {
-        await _catalogRepository.CreateCatalogItem(catalogItem);
-    }
-
-    public ValueTask DeleteCatalogItem(int id)
-    {
-        _catalogRepository.DeleteCatalogItem(id);
-        return ValueTask.CompletedTask;
     }
 }

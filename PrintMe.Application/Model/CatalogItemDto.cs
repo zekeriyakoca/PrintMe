@@ -1,4 +1,5 @@
 using System.Text.Json.Serialization;
+using PrintMe.Application.Constants;
 using PrintMe.Application.Entities;
 using PrintMe.Application.Enums;
 
@@ -24,14 +25,15 @@ public class CatalogItemDto
     
     public CatalogTags? Tags { get; set; }
 
-    // TODO : Implement based on the actual print size
-    public List<PrintSize> Sizes => new List<PrintSize>() { PrintSize.Size13x18, PrintSize.Size21x30, PrintSize.Size30x40, PrintSize.Size40x50, PrintSize.Size50x70, PrintSize.Size61x91 };
-    
+    public PrintSize Size { get; set; }
+
     public int AvailableStock { get; set; }
     
     public int? SalePercentage { get; set; }
     
     public List<ImageDto> Images { get; set; }
+
+    public bool IsCustomProduct { get; set; }
 
     public string VariantType => "";
     public string Rating => "";
@@ -41,7 +43,7 @@ public class CatalogItemDto
     public CatalogItemDto() {}
 
     [JsonConstructor]
-    public CatalogItemDto(int id, string name, string motto, string description, string owner, decimal price, Category category, CatalogType catalogType, CatalogTags? tags, int availableStock, int? salePercentage, List<ImageDto> images)
+    public CatalogItemDto(int id, string name, string motto, string description, string owner, decimal price, Category category, CatalogType catalogType, CatalogTags? tags, int availableStock, int? salePercentage, List<ImageDto> images, PrintSize size, bool isCustomProduct)
     {
         Id = id;
         Name = name;
@@ -54,7 +56,9 @@ public class CatalogItemDto
         Tags = tags;
         AvailableStock = availableStock;
         SalePercentage = salePercentage;
-        Images = images ?? new List<ImageDto>();
+        Images = images;
+        Size = size;
+        IsCustomProduct = isCustomProduct;
     }
 
     // Example method to convert from CatalogItem to CatalogItemDto
@@ -78,7 +82,9 @@ public class CatalogItemDto
                 new ImageDto(GetImageBaseUrl(item.PictureFileName, "-mockup1.jpeg"), GetImageBaseUrl(item.PictureFileName, "-mockup1-thumbnail.jpeg")),
                 new ImageDto(GetImageBaseUrl(item.PictureFileName, "-mockup2.jpeg"), GetImageBaseUrl(item.PictureFileName, "-mockup2-thumbnail.jpeg")),
                 new ImageDto(GetImageBaseUrl(item.PictureFileName, "-mockup3.jpeg"), GetImageBaseUrl(item.PictureFileName, "-mockup3-thumbnail.jpeg"))
-            }
+            },
+            item.Size,
+            item.Name == ApplicationConstants.CUSTOM_PRODUCT_NAME // TODO : Refactor here. This is a snap solution
         );
     }
     

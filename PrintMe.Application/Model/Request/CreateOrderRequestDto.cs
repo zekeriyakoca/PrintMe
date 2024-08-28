@@ -1,6 +1,6 @@
 namespace PrintMe.Application.Model;
 
-public record CreateOrderRequest(
+public record CreateOrderRequestDto(
     string UserId,
     string UserName,
     string City,

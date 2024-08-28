@@ -9,6 +9,4 @@ public interface ICatalogRepository : IBaseRepository
     Task<CatalogItem?> GetCatalogItem(int id);
     Task<CatalogItem?> GetCatalogItemByName(string productName);
     Task UpdateCatalogItem(CatalogItem catalogItem);
-    Task CreateCatalogItem(CatalogItem catalogItem);
-    void DeleteCatalogItem(int id);
 }

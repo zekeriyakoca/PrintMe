@@ -5,6 +5,7 @@ namespace PrintMe.Application.Constants;
 
 public static class BootstrapConstants
 {
+    // TODO : Move to DB
     public static readonly List<FrameDto> FRAMES = new List<FrameDto>
     {
         new FrameDto(0, "Rolled-up",

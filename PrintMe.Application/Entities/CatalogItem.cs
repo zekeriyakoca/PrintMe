@@ -15,7 +15,6 @@ public class CatalogItem
     [Required]
     [MaxLength(50)]
     public string Name { get; set; }
-    
 
     public string Motto { get; set; }
 
@@ -26,7 +25,6 @@ public class CatalogItem
     public string SearchParameters { get; set; }
 
     public decimal Price { get; set; }
-    
 
     public string PictureFileName { get; set; }
     
@@ -44,7 +42,8 @@ public class CatalogItem
     
     public CatalogTags? Tags { get; set; }
 
-    public PrintSize? Size { get; set; }
+    // Sizes of the product available
+    public PrintSize Size { get; set; } = PrintSize.None;
 
     // Quantity in stock
     public int AvailableStock { get; set; }
@@ -52,12 +51,11 @@ public class CatalogItem
     // Available stock at which we should reorder
     public int RestockThreshold { get; set; }
     
-    [Range(1,99)]
-    public int? SalePercentage { get; set; }
-
-
     // Maximum number of units that can be in-stock at any time (due to physicial/logistical constraints in warehouses)
     public int MaxStockThreshold { get; set; }
+    
+    [Range(1,99)]
+    public int? SalePercentage { get; set; }
 
     /// <summary>
     /// True if item is on reorder
@@ -65,8 +63,7 @@ public class CatalogItem
     public bool OnReorder { get; set; }
 
     public CatalogItem() { }
-
-
+    
     /// <summary>
     /// Decrements the quantity of a particular item in inventory and ensures the restockThreshold hasn't
     /// been breached. If so, a RestockRequest is generated in CheckThreshold. 

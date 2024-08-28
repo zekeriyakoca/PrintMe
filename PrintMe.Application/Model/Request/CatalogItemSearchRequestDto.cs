@@ -2,7 +2,7 @@ using PrintMe.Application.Enums;
 
 namespace PrintMe.Application.Model;
 
-public record CatalogItemSearchRequest : PaginationRequest
+public record CatalogItemSearchRequestDto : PaginationRequestDto
 {
     public string? SearchTerm { get; init; }
     public Category? Category { get; init; }

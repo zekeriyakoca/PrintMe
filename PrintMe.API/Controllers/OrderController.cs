@@ -28,13 +28,13 @@ public class OrderController : BaseController
     }
     
     [HttpPost("draft")]
-    public async Task<ActionResult> CreateOrderDraftAsync([FromBody]CreateDraftOrderRequest dto)
+    public async Task<ActionResult> CreateOrderDraftAsync([FromBody]CreateDraftOrderRequestDto dto)
     {
         throw new NotImplementedException();
     }
     
     [HttpPost]
-    public async Task<object> CreateOrderAsync([FromBody]CreateOrderRequest dto)
+    public async Task<object> CreateOrderAsync([FromBody]CreateOrderRequestDto dto)
     {
         throw new NotImplementedException();
     }

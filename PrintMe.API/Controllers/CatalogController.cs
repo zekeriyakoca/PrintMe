@@ -10,7 +10,6 @@ using PrintMe.Application.Model;
 
 namespace PrintMe.API.Controllers;
 
-// [Authorize]
 public class CatalogController : BaseController
 {
     private readonly ICatalogService _catalogService;
@@ -27,42 +26,13 @@ public class CatalogController : BaseController
         _configuration = configuration;
     }
 
-    [HttpGet]
-    [Authorize(Policy = "Admin")]
-    public async Task<ActionResult> GetCatalogItems([FromQuery] PaginationRequest paginationRequest)
-    {
-        var items = await _catalogService.GetCatalogItems(paginationRequest);
-        return Ok(items);
-    }
-
-    [HttpPost("items-by-ids")]
-    public async Task<ActionResult> GetCatalogItems([FromBody] int[] ids)
-    {
-        if (ids.Length.Equals(0))
-        {
-            return BadRequest("No id provided.");
-        }
-
-        var items = await _catalogService.GetItemsByIds(ids);
-        return Ok(items);
-    }
-
-    public class UploadCustomProductImageRequest
-    {
-        public IFormFile Image { get; set; }
-    }
-
     [HttpPost("custom-product/upload-image")]
-    public async Task<ActionResult> UploadCustomProductImage([FromForm] UploadCustomProductImageRequest dto)
+    [RequestSizeLimit(52428800)] // 50 MB in bytes
+    public async Task<ActionResult> UploadCustomProductImage([FromForm] UploadCustomProductImageRequestDto dto)
     {
         if (dto?.Image == null || dto.Image.Length == 0)
         {
             return BadRequest("No file uploaded.");
-        }
-
-        if (dto.Image.Length > 50 * 1024 * 1024)
-        {
-            return BadRequest("File size is too large.");
         }
 
         if (dto.Image.ContentType != "image/jpeg" && dto.Image.ContentType != "image/png")
@@ -115,23 +85,23 @@ public class CatalogController : BaseController
     }
 
     [HttpPost("search")]
-    public async Task<ActionResult> SearchCatalogItems([FromBody] CatalogItemSearchRequest searchRequest)
+    public async Task<ActionResult> SearchCatalogItems([FromBody] CatalogItemSearchRequestDto searchRequestDto)
     {
-        var items = await _catalogService.SearchCatalogItems(searchRequest);
+        var items = await _catalogService.SearchCatalogItems(searchRequestDto);
         return Ok(items);
     }
 
     [HttpGet("search")]
-    public async Task<ActionResult> GetCatalogItemsFiltered([FromQuery] CatalogItemSearchRequest searchRequest)
+    public async Task<ActionResult> GetCatalogItemsFiltered([FromQuery] CatalogItemSearchRequestDto searchRequestDto)
     {
-        var items = await _catalogService.SearchCatalogItems(searchRequest);
+        var items = await _catalogService.SearchCatalogItems(searchRequestDto);
         return Ok(items);
     }
 
 
     [HttpPut("{id}")]
     [Authorize(Policy = "Admin")]
-    public async Task<IActionResult> UpdateCatalogItem([FromRoute] int id, [FromBody] UpdateCatalogItemRequest catalogItem)
+    public async Task<IActionResult> UpdateCatalogItem([FromRoute] int id, [FromBody] UpdateCatalogItemRequestDto catalogItem)
     {
         if (id != catalogItem.Id)
         {
@@ -143,43 +113,10 @@ public class CatalogController : BaseController
         return NoContent();
     }
 
-    [HttpPost]
-    [Authorize(Policy = "Admin")]
-    public async Task<ActionResult<CatalogItem>> CreateCatalogItem(CatalogItem catalogItem)
-    {
-        await _catalogService.CreateCatalogItem(catalogItem);
-
-        return CreatedAtAction(nameof(GetCatalogItem), new { id = catalogItem.Id }, catalogItem);
-    }
-
-    [HttpDelete("{id}")]
-    [Authorize(Policy = "Admin")]
-    public async Task<IActionResult> DeleteCatalogItem(int id)
-    {
-        await _catalogService.DeleteCatalogItem(id);
-
-        return NoContent();
-    }
-
-    public class UploadProductImagesRequest
-    {
-        public string FolderName { get; set; }
-        public IFormFile Image { get; set; }
-        public IFormFile? ImageAlternate { get; set; }
-        public IFormFile? Thumbnail { get; set; }
-        public IFormFile? ThumbnailAlternate { get; set; }
-        public List<IFormFile>? OtherImages { get; set; } = new List<IFormFile>();
-    }
-
     [Obsolete($"Use {nameof(GenerateProductByImage)} instead.")]
     [HttpPost("upload-product-images")]
-    public async Task<IActionResult> UploadImages([FromForm] UploadProductImagesRequest request)
+    public async Task<IActionResult> UploadImages([FromForm] UploadProductImagesRequestDto request)
     {
-        // if (await _imageRepository.DoesFolderExistAsync(request.FolderName))
-        // {
-        //     return BadRequest("Folder already exists.");
-        // }
-
         await using var imageStream = request.Image.OpenReadStream();
         await using var imageAlternateStream = request.ImageAlternate?.OpenReadStream();
         await using var thumbnailStream = request.Thumbnail?.OpenReadStream();
@@ -195,14 +132,6 @@ public class CatalogController : BaseController
         return Ok("Images uploaded successfully.");
     }
 
-    public class GenerateProductByImageDto
-    {
-        public IEnumerable<IFormFile> Images { get; set; }
-        public CatalogTags? Tag { get; set; }
-        public List<int> TemplateIds { get; } = new();
-        public bool IsVertical { get; set; } = false;
-    }
-
     [HttpPost("generate-product-by-image")]
     [RequestSizeLimit(104857600)] // 100 MB in bytes
     public async Task<IActionResult> GenerateProductByImage([FromForm] GenerateProductByImageDto dto)
@@ -214,14 +143,7 @@ public class CatalogController : BaseController
             await using var imageStream = image.OpenReadStream();
             var url = await _imageRepository.UploadBlobAsync(imageId, imageStream);
 
-            var messageContent = new ImageProcessMessage
-            {
-                ImageId = imageId,
-                ImageUrl = url,
-                ImageDescription = image.FileName,
-                Tag = dto.Tag,
-                MockupTemplates = templates
-            };
+            var messageContent = new ImageProcessMessage(imageId, url, image.FileName, templates, dto.Tag);
 
             await _queueRepository.SendImageProcessMessageAsync(messageContent);
         }

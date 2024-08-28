@@ -5,12 +5,10 @@ namespace PrintMe.Application.Interfaces;
 
 public interface ICatalogService
 {
-    Task<PaginatedItems<CatalogItem>> GetCatalogItems(PaginationRequest paginationRequest);
-    Task<IEnumerable<CatalogItem>> GetItemsByIds(int[] ids);
-    Task<PaginatedItems<CatalogItemDto>> SearchCatalogItems(CatalogItemSearchRequest searchRequest);
+    Task<PaginatedItems<CatalogItemDto>> GetCatalogItems(PaginationRequestDto paginationRequestDto);
+    Task<IEnumerable<CatalogItemDto>> GetItemsByIds(int[] ids);
+    Task<PaginatedItems<CatalogItemDto>> SearchCatalogItems(CatalogItemSearchRequestDto searchRequestDto);
     Task<CatalogItemDto?> GetCatalogItem(int id);
     Task<CatalogItemDto?> GetCustomCatalogItem();
-    Task UpdateCatalogItem(UpdateCatalogItemRequest catalogItem);
-    Task CreateCatalogItem(CatalogItem catalogItem);
-    ValueTask DeleteCatalogItem(int id);
+    Task UpdateCatalogItem(UpdateCatalogItemRequestDto catalogItem);
 }
