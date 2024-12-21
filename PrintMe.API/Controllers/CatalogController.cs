@@ -141,7 +141,7 @@ public class CatalogController : BaseController
             var templates = RetrieveRandomTemplates(dto);
             var imageId = Guid.NewGuid().ToString();
             await using var imageStream = image.OpenReadStream();
-            var url = await _imageRepository.UploadBlobAsync(imageId, imageStream);
+            var url = await _imageRepository.UploadBlobAsync(imageId + ".jpeg", imageStream);
 
             var messageContent = new ImageProcessMessage(imageId, url, image.FileName, templates, dto.Tag);
 
