@@ -113,6 +113,20 @@ public class CatalogController : BaseController
         return NoContent();
     }
 
+    [HttpDelete("{id}")]
+    [Authorize(Policy = "Admin")]
+    public async Task<ActionResult<CatalogItem>> DeleteCatalogItem([FromRoute] int id)
+    {
+        if (id < 1)
+        {
+            return BadRequest("Id is not valid.");
+        }
+
+        await _catalogService.DeleteCatalogItem(id);
+        
+        return Ok();
+    }
+
     [Obsolete($"Use {nameof(GenerateProductByImage)} instead.")]
     [HttpPost("upload-product-images")]
     public async Task<IActionResult> UploadImages([FromForm] UploadProductImagesRequestDto request)

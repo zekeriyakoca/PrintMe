@@ -11,4 +11,5 @@ public interface ICatalogService
     Task<CatalogItemDto?> GetCatalogItem(int id);
     Task<CatalogItemDto?> GetCustomCatalogItem();
     Task UpdateCatalogItem(UpdateCatalogItemRequestDto catalogItem);
+    Task DeleteCatalogItem(int id);
 }

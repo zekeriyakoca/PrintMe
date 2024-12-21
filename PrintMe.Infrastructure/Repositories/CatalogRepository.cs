@@ -37,4 +37,9 @@ public class CatalogRepository : BaseRepository, ICatalogRepository
     {
         throw new NotImplementedException();
     }
+    
+    public async Task DeleteCatalogItem(int id)
+    {
+        await _context.CatalogItems.Where(x=> x.Id == id).ExecuteDeleteAsync();
+    }
 }

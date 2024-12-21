@@ -10,22 +10,13 @@ using PrintMe.Application.DomainExceptions;
 
 namespace PrintMe.API.Services;
 
-public class CatalogService : ICatalogService
+public class CatalogService(ICatalogRepository catalogRepository, IDistributedCache cache) : ICatalogService
 {
-    private readonly ICatalogRepository _catalogRepository;
-    private readonly IDistributedCache _cache;
-
-    public CatalogService(ICatalogRepository catalogRepository, IDistributedCache cache)
-    {
-        _catalogRepository = catalogRepository;
-        _cache = cache;
-    }
-
     public async Task<PaginatedItems<CatalogItemDto>> GetCatalogItems(PaginationRequestDto paginationRequestDto)
     {
-        var totalItemsCount =  _catalogRepository.GetCatalogItemsLazily().Count();
+        var totalItemsCount =  catalogRepository.GetCatalogItemsLazily().Count();
         
-        var items = await _catalogRepository.GetCatalogItemsLazily()
+        var items = await catalogRepository.GetCatalogItemsLazily()
             .OrderBy(c => c.Name)
             .Where(x => x.Name != ApplicationConstants.CUSTOM_PRODUCT_NAME)
             .Skip(paginationRequestDto.PageIndex * paginationRequestDto.PageSize)
@@ -40,7 +31,7 @@ public class CatalogService : ICatalogService
     
     public async Task<IEnumerable<CatalogItemDto>> GetItemsByIds(int[] ids)
     {
-        var items =  await _catalogRepository.GetCatalogItemsLazily()
+        var items =  await catalogRepository.GetCatalogItemsLazily()
             .Select(x=> CatalogItemDto.FromCatalogItem(x))
             .Where(x=> ids.Contains(x.Id) && x.Name != ApplicationConstants.CUSTOM_PRODUCT_NAME)
             .ToListAsync();
@@ -51,7 +42,7 @@ public class CatalogService : ICatalogService
     public async Task<PaginatedItems<CatalogItemDto>> SearchCatalogItems(CatalogItemSearchRequestDto searchRequestDto)
     {
         var cacheKey = searchRequestDto.GetHashCode().ToString();
-        var cachedResult = await _cache.GetStringAsync(cacheKey);
+        var cachedResult = await cache.GetStringAsync(cacheKey);
         if(!string.IsNullOrEmpty(cachedResult))
         {
             var cachedItems = JsonSerializer.Deserialize<PaginatedItems<CatalogItemDto>>(cachedResult);
@@ -62,14 +53,14 @@ public class CatalogService : ICatalogService
         }
         
         var result = await SearchCatalogItems_DoWork(searchRequestDto);
-        await _cache.SetStringAsync(cacheKey, JsonSerializer.Serialize(result), new DistributedCacheEntryOptions() { AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(5)});
+        await cache.SetStringAsync(cacheKey, JsonSerializer.Serialize(result), new DistributedCacheEntryOptions() { AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(5)});
 
         return result;
     }
     
     private async Task<PaginatedItems<CatalogItemDto>> SearchCatalogItems_DoWork(CatalogItemSearchRequestDto searchRequestDto)
     {
-        var query = _catalogRepository.GetCatalogItemsLazily();
+        var query = catalogRepository.GetCatalogItemsLazily();
         
         if (!string.IsNullOrEmpty(searchRequestDto.SearchTerm))
         {
@@ -126,18 +117,23 @@ public class CatalogService : ICatalogService
 
     public async Task<CatalogItemDto?> GetCatalogItem(int id)
     {
-        return CatalogItemDto.FromCatalogItem(await _catalogRepository.GetCatalogItem(id) ?? throw new GenericNotFoundException("Catalog item not found."));
+        return CatalogItemDto.FromCatalogItem(await catalogRepository.GetCatalogItem(id) ?? throw new GenericNotFoundException("Catalog item not found."));
+    }
+    
+    public Task DeleteCatalogItem(int id)
+    {
+        return catalogRepository.DeleteCatalogItem(id);
     }
     
     // TODO : Refactor here
     public async Task<CatalogItemDto?> GetCustomCatalogItem()
     {
-        return CatalogItemDto.FromCatalogItem(await _catalogRepository.GetCatalogItemByName(ApplicationConstants.CUSTOM_PRODUCT_NAME) ?? throw new GenericNotFoundException("Custom product not found."));
+        return CatalogItemDto.FromCatalogItem(await catalogRepository.GetCatalogItemByName(ApplicationConstants.CUSTOM_PRODUCT_NAME) ?? throw new GenericNotFoundException("Custom product not found."));
     }
 
     public async Task UpdateCatalogItem(UpdateCatalogItemRequestDto catalogItem)
     {
-        var entity = await _catalogRepository.GetCatalogItem(catalogItem.Id);
+        var entity = await catalogRepository.GetCatalogItem(catalogItem.Id);
         if(entity == null)
         {
             throw new Exception("Catalog item not found.");
@@ -148,6 +144,6 @@ public class CatalogService : ICatalogService
         entity.Category = catalogItem.Category;
         entity.CatalogType = catalogItem.CatalogType;
         entity.Tags = catalogItem.Tags;
-        await _catalogRepository.SaveChangesAsync();
+        await catalogRepository.SaveChangesAsync();
     }
 }
