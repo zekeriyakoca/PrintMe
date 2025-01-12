@@ -66,16 +66,16 @@ public static class MockupTemplates
             Height = 1779 - 237,
             Type = MockupTemplateType.HorizontalForVerticalFrame
         },
-        new MockupTemplate
-        {
-            Id = 7,
-            TemplateImageUrl = "https://genstorageaccount3116.blob.core.windows.net/print-me-frames/7.jpg",
-            X = 1910,
-            Y = 718,
-            Width = 3267 - 1910,
-            Height = 2644 - 718,
-            Type = MockupTemplateType.HorizontalForVerticalFrame
-        },
+        // new MockupTemplate
+        // {
+        //     Id = 7,
+        //     TemplateImageUrl = "https://genstorageaccount3116.blob.core.windows.net/print-me-frames/7.jpg",
+        //     X = 1910,
+        //     Y = 718,
+        //     Width = 3267 - 1910,
+        //     Height = 2644 - 718,
+        //     Type = MockupTemplateType.HorizontalForVerticalFrame
+        // },
         new MockupTemplate
         {
             Id = 25,
@@ -103,7 +103,7 @@ public static class MockupTemplates
             X = 1993,
             Y = 393,
             Width = 3198 - 1993,
-            Height = 2305 - 393,
+            Height = 2035 - 393,
             Type = MockupTemplateType.HorizontalForVerticalFrame
         },
         new MockupTemplate
@@ -146,6 +146,26 @@ public static class MockupTemplates
             Height = 343 - 88,
             Type = MockupTemplateType.HorizontalForVerticalFrame
         },
+        new MockupTemplate
+        {
+            Id = 139,
+            TemplateImageUrl = "https://genstorageaccount3116.blob.core.windows.net/print-me-frames/139.png",
+            X = 828,
+            Y = 110,
+            Width = 1093 - 828,
+            Height = 509 - 110,
+            Type = MockupTemplateType.HorizontalForVerticalFrame
+        },
+        new MockupTemplate
+        {
+            Id = 141,
+            TemplateImageUrl = "https://genstorageaccount3116.blob.core.windows.net/print-me-frames/141.png",
+            X = 890,
+            Y = 95,
+            Width = 1175 - 890,
+            Height = 526 - 95,
+            Type = MockupTemplateType.HorizontalForVerticalFrame
+        }
     };
 
     private static List<MockupTemplate> _horizontalForHorizontalFrameMockupTemplates = new List<MockupTemplate>
@@ -180,16 +200,16 @@ public static class MockupTemplates
             Height = 1594 - 505,
             Type = MockupTemplateType.HorizontalForHorizontalFrame
         },
-        new MockupTemplate
-        {
-            Id = 104,
-            TemplateImageUrl = "https://genstorageaccount3116.blob.core.windows.net/print-me-frames/104.png",
-            X = 955,
-            Y = 615,
-            Width = 2620 - 955,
-            Height = 1860 - 615,
-            Type = MockupTemplateType.HorizontalForHorizontalFrame
-        },
+        // new MockupTemplate
+        // {
+        //     Id = 104,
+        //     TemplateImageUrl = "https://genstorageaccount3116.blob.core.windows.net/print-me-frames/104.png",
+        //     X = 955,
+        //     Y = 615,
+        //     Width = 2620 - 955,
+        //     Height = 1860 - 615,
+        //     Type = MockupTemplateType.HorizontalForHorizontalFrame
+        // },
         new MockupTemplate
         {
             Id = 106,
@@ -230,34 +250,34 @@ public static class MockupTemplates
             Height = 2511 - 734,
             Type = MockupTemplateType.HorizontalForHorizontalFrame
         },
-        new MockupTemplate
-        {
-            Id = 110,
-            TemplateImageUrl = "https://genstorageaccount3116.blob.core.windows.net/print-me-frames/110.png",
-            X = 916,
-            Y = 242,
-            Width = 1707 - 916,
-            Height = 755 - 242,
-            Type = MockupTemplateType.HorizontalForHorizontalFrame
-        },
+        // new MockupTemplate
+        // {
+        //     Id = 110,
+        //     TemplateImageUrl = "https://genstorageaccount3116.blob.core.windows.net/print-me-frames/110.png",
+        //     X = 916,
+        //     Y = 242,
+        //     Width = 1707 - 916,
+        //     Height = 755 - 242,
+        //     Type = MockupTemplateType.HorizontalForHorizontalFrame
+        // },
         new MockupTemplate
         {
             Id = 111,
             TemplateImageUrl = "https://genstorageaccount3116.blob.core.windows.net/print-me-frames/111.png",
-            X = 1567,
-            Y = 1230,
-            Width = 3490 - 1567,
-            Height = 2602 - 1230,
+            X = 674,
+            Y = 600,
+            Width = 2825 - 674,
+            Height = 1901 - 600,
             Type = MockupTemplateType.HorizontalForHorizontalFrame
         },
         new MockupTemplate
         {
             Id = 112,
             TemplateImageUrl = "https://genstorageaccount3116.blob.core.windows.net/print-me-frames/112.png",
-            X = 675,
-            Y = 600,
-            Width = 2826 - 675,
-            Height = 1902 - 600,
+            X = 1567,
+            Y = 1229,
+            Width = 3490 - 1567,
+            Height = 2602 - 1229,
             Type = MockupTemplateType.HorizontalForHorizontalFrame
         },
         new MockupTemplate
@@ -268,6 +288,36 @@ public static class MockupTemplates
             Y = 130,
             Width = 867 - 611,
             Height = 308 - 130,
+            Type = MockupTemplateType.HorizontalForHorizontalFrame
+        },
+        new MockupTemplate
+        {
+            Id = 137,
+            TemplateImageUrl = "https://genstorageaccount3116.blob.core.windows.net/print-me-frames/137.png",
+            X = 481,
+            Y = 237,
+            Width = 1393 - 481,
+            Height = 840 - 237,
+            Type = MockupTemplateType.HorizontalForHorizontalFrame
+        },
+        new MockupTemplate
+        {
+            Id = 138,
+            TemplateImageUrl = "https://genstorageaccount3116.blob.core.windows.net/print-me-frames/138.png",
+            X = 755,
+            Y = 160,
+            Width = 1165 - 755,
+            Height = 432 - 160,
+            Type = MockupTemplateType.HorizontalForHorizontalFrame
+        },
+        new MockupTemplate
+        {
+            Id = 140,
+            TemplateImageUrl = "https://genstorageaccount3116.blob.core.windows.net/print-me-frames/140.png",
+            X = 914,
+            Y = 122,
+            Width = 1345 - 914,
+            Height = 407 - 122,
             Type = MockupTemplateType.HorizontalForHorizontalFrame
         }
     };
@@ -282,16 +332,6 @@ public static class MockupTemplates
             Y = 250,
             Width = 759 - 397,
             Height = 775 - 250,
-            Type = MockupTemplateType.VerticalForVerticalFrame
-        },
-        new MockupTemplate
-        {
-            Id = 12,
-            TemplateImageUrl = "https://genstorageaccount3116.blob.core.windows.net/print-me-frames/12.jpg",
-            X = 1616,
-            Y = 1430,
-            Width = 3090 - 1616,
-            Height = 3487 - 1430,
             Type = MockupTemplateType.VerticalForVerticalFrame
         },
         new MockupTemplate
@@ -484,6 +524,16 @@ public static class MockupTemplates
             Width = 490 - 263,
             Height = 425 - 103,
             Type = MockupTemplateType.VerticalForVerticalFrame
+        },
+        new MockupTemplate
+        {
+            Id = 143,
+            TemplateImageUrl = "https://genstorageaccount3116.blob.core.windows.net/print-me-frames/143.png",
+            X = 499,
+            Y = 262,
+            Width = 873 - 499,
+            Height = 826 - 262,
+            Type = MockupTemplateType.VerticalForVerticalFrame
         }
     };
 
@@ -509,16 +559,16 @@ public static class MockupTemplates
             Height = 1264 - 665,
             Type = MockupTemplateType.VerticalForHorizontalFrame
         },
-        new MockupTemplate
-        {
-            Id = 53,
-            TemplateImageUrl = "https://genstorageaccount3116.blob.core.windows.net/print-me-frames/53.png",
-            X = 552,
-            Y = 1232,
-            Width = 2480 - 552,
-            Height = 2600 - 1232,
-            Type = MockupTemplateType.VerticalForHorizontalFrame
-        },
+        // new MockupTemplate
+        // {
+        //     Id = 53,
+        //     TemplateImageUrl = "https://genstorageaccount3116.blob.core.windows.net/print-me-frames/53.png",
+        //     X = 552,
+        //     Y = 1232,
+        //     Width = 2480 - 552,
+        //     Height = 2600 - 1232,
+        //     Type = MockupTemplateType.VerticalForHorizontalFrame
+        // },
         new MockupTemplate
         {
             Id = 54,
@@ -581,14 +631,44 @@ public static class MockupTemplates
         },
         new MockupTemplate
         {
-            Id = 133,
-            TemplateImageUrl = "https://genstorageaccount3116.blob.core.windows.net/print-me-frames/133.png",
-            X = 194,
-            Y = 176,
-            Width = 457 - 194,
-            Height = 350 - 176,
+            Id = 142,
+            TemplateImageUrl = "https://genstorageaccount3116.blob.core.windows.net/print-me-frames/142.png",
+            X = 630,
+            Y = 355,
+            Width = 1239 - 630,
+            Height = 758 - 355,
             Type = MockupTemplateType.VerticalForHorizontalFrame
         },
+        new MockupTemplate
+        {
+            Id = 144,
+            TemplateImageUrl = "https://genstorageaccount3116.blob.core.windows.net/print-me-frames/144.png",
+            X = 625,
+            Y = 385,
+            Width = 1121 - 625,
+            Height = 713 - 385,
+            Type = MockupTemplateType.VerticalForHorizontalFrame
+        },
+        new MockupTemplate
+        {
+            Id = 145,
+            TemplateImageUrl = "https://genstorageaccount3116.blob.core.windows.net/print-me-frames/145.png",
+            X = 277,
+            Y = 276,
+            Width = 885 - 277,
+            Height = 679 - 276,
+            Type = MockupTemplateType.VerticalForHorizontalFrame
+        },
+        new MockupTemplate
+        {
+            Id = 146,
+            TemplateImageUrl = "https://genstorageaccount3116.blob.core.windows.net/print-me-frames/146.png",
+            X = 389,
+            Y = 356,
+            Width = 969 - 389,
+            Height = 740 - 356,
+            Type = MockupTemplateType.VerticalForHorizontalFrame
+        }
     };
 
     public static List<MockupTemplate> GetMockupTemplates()
