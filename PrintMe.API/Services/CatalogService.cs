@@ -105,6 +105,7 @@ public class CatalogService(ICatalogRepository catalogRepository, IDistributedCa
 
         query = searchRequestDto.OrderBy switch
         {
+            OrderByEnum.Order => query.OrderByDescending(x => x.ItemOrder),
             OrderByEnum.PriceAsc => query.OrderBy(x => x.Price),
             OrderByEnum.PriceDesc => query.OrderByDescending(x => x.Price),
             OrderByEnum.DateAsc => query.OrderBy(x => x.Id),
