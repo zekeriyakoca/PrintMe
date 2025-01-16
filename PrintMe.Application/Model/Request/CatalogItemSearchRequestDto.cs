@@ -12,4 +12,16 @@ public record CatalogItemSearchRequestDto : PaginationRequestDto
     public int? PriceFrom { get; init; }
     public int? PriceTo { get; init; }
     public bool IsOnlyAvailableItems { get; init; } = true;
+    public OrderByEnum OrderBy { get; init; } = OrderByEnum.Order;
+}
+
+public enum OrderByEnum
+{
+    Order,
+    PriceAsc,
+    PriceDesc,
+    DateAsc,
+    DateDesc,
+    MostPopular,
+    BestRating
 }

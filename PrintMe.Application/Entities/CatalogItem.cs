@@ -11,15 +11,13 @@ namespace PrintMe.Application.Entities;
 public class CatalogItem
 {
     public int Id { get; set; }
-    
-    [Required]
-    [MaxLength(50)]
-    public string Name { get; set; }
+
+    [Required] [MaxLength(50)] public string Name { get; set; }
 
     public string Motto { get; set; }
 
     public string Description { get; set; }
-    
+
     public string Owner { get; set; }
 
     public string SearchParameters { get; set; }
@@ -27,19 +25,21 @@ public class CatalogItem
     public decimal Price { get; set; }
 
     public string PictureFileName { get; set; }
-    
+
     public string OriginalImage { get; set; }
-    
+
     public int OriginalImageWidth { get; set; }
-    
-    public int OriginalImageHeight{ get; set; }
-    
+
+    public int OriginalImageHeight { get; set; }
+
+    public int ItemOrder { get; set; }
+
     public List<ProductImage> ProductImages { get; set; }
 
     public Category Category { get; set; } = Category.None;
 
     public CatalogType CatalogType { get; set; } = CatalogType.Default;
-    
+
     public CatalogTags? Tags { get; set; }
 
     // Sizes of the product available
@@ -50,20 +50,21 @@ public class CatalogItem
 
     // Available stock at which we should reorder
     public int RestockThreshold { get; set; }
-    
+
     // Maximum number of units that can be in-stock at any time (due to physicial/logistical constraints in warehouses)
     public int MaxStockThreshold { get; set; }
-    
-    [Range(1,99)]
-    public int? SalePercentage { get; set; }
+
+    [Range(1, 99)] public int? SalePercentage { get; set; }
 
     /// <summary>
     /// True if item is on reorder
     /// </summary>
     public bool OnReorder { get; set; }
 
-    public CatalogItem() { }
-    
+    public CatalogItem()
+    {
+    }
+
     /// <summary>
     /// Decrements the quantity of a particular item in inventory and ensures the restockThreshold hasn't
     /// been breached. If so, a RestockRequest is generated in CheckThreshold. 

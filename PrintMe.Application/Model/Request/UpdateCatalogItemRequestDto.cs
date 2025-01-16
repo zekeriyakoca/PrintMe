@@ -18,4 +18,7 @@ public class UpdateCatalogItemRequestDto
     public CatalogType CatalogType { get; set; } = CatalogType.Print;
     
     public CatalogTags? Tags { get; set; }
+
+    [Range(0,Int32.MaxValue)]
+    public int ItemOrder { get; set; } = 0;
 }

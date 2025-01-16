@@ -8,13 +8,13 @@ namespace PrintMe.Application.Model;
 public class CatalogItemDto
 {
     public int Id { get; set; }
-    
+
     public string Name { get; set; }
 
     public string Motto { get; set; }
 
     public string Description { get; set; }
-    
+
     public string Owner { get; set; }
 
     public decimal Price { get; set; }
@@ -22,16 +22,18 @@ public class CatalogItemDto
     public Category Category { get; set; } = Category.None;
 
     public CatalogType CatalogType { get; set; } = CatalogType.Print;
-    
+
     public CatalogTags? Tags { get; set; }
 
     public PrintSize Size { get; set; }
 
     public int AvailableStock { get; set; }
-    
+
     public int? SalePercentage { get; set; }
-    
+
     public List<ImageDto> Images { get; set; }
+
+    public int ItemOrder { get; set; }
 
     public bool IsCustomProduct { get; set; }
 
@@ -40,10 +42,13 @@ public class CatalogItemDto
     public int NumberOfReviews => 0;
 
     // Parameterless constructor needed for deserialization
-    public CatalogItemDto() {}
+    public CatalogItemDto()
+    {
+    }
 
     [JsonConstructor]
-    public CatalogItemDto(int id, string name, string motto, string description, string owner, decimal price, Category category, CatalogType catalogType, CatalogTags? tags, int availableStock, int? salePercentage, List<ImageDto> images, PrintSize size, bool isCustomProduct)
+    public CatalogItemDto(int id, string name, string motto, string description, string owner, decimal price, Category category, CatalogType catalogType, CatalogTags? tags,
+        int availableStock, int? salePercentage, List<ImageDto> images, PrintSize size, int itemOrder, bool isCustomProduct)
     {
         Id = id;
         Name = name;
@@ -58,6 +63,7 @@ public class CatalogItemDto
         SalePercentage = salePercentage;
         Images = images;
         Size = size;
+        ItemOrder = itemOrder;
         IsCustomProduct = isCustomProduct;
     }
 
@@ -84,10 +90,11 @@ public class CatalogItemDto
                 new ImageDto(GetImageBaseUrl(item.PictureFileName, "-mockup3.jpeg"), GetImageBaseUrl(item.PictureFileName, "-mockup3-thumbnail.jpeg"))
             },
             item.Size,
+            item.ItemOrder,
             item.Name == ApplicationConstants.CUSTOM_PRODUCT_NAME // TODO : Refactor here. This is a snap solution
         );
     }
-    
+
     private static string GetImageBaseUrl(string imageId, string suffix)
     {
         return $"https://genstorageaccount3116.blob.core.windows.net/printme-processed-images/{imageId}/{imageId}{suffix}";

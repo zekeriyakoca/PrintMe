@@ -98,7 +98,6 @@ public class CatalogController : BaseController
         return Ok(items);
     }
 
-
     [HttpPut("{id}")]
     [Authorize(Policy = "Admin")]
     public async Task<IActionResult> UpdateCatalogItem([FromRoute] int id, [FromBody] UpdateCatalogItemRequestDto catalogItem)

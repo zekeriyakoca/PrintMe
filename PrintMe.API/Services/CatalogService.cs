@@ -103,9 +103,17 @@ public class CatalogService(ICatalogRepository catalogRepository, IDistributedCa
             query = query.Where(x => x.Size == searchRequestDto.Size);
         }
 
+        query = searchRequestDto.OrderBy switch
+        {
+            OrderByEnum.PriceAsc => query.OrderBy(x => x.Price),
+            OrderByEnum.PriceDesc => query.OrderByDescending(x => x.Price),
+            OrderByEnum.DateAsc => query.OrderBy(x => x.Id),
+            OrderByEnum.DateDesc => query.OrderByDescending(x => x.Id),
+            OrderByEnum.MostPopular => query.OrderBy(x => x.Id),
+            _ => query
+        };
         var count = await query.LongCountAsync();
         var items = await query
-            .OrderBy(x=>x.Id)
             .Where(x => x.Name != ApplicationConstants.CUSTOM_PRODUCT_NAME)
             .Skip(searchRequestDto.PageIndex * searchRequestDto.PageSize)
             .Take(searchRequestDto.PageSize)
@@ -144,6 +152,7 @@ public class CatalogService(ICatalogRepository catalogRepository, IDistributedCa
         entity.Category = catalogItem.Category;
         entity.CatalogType = catalogItem.CatalogType;
         entity.Tags = catalogItem.Tags;
+        entity.ItemOrder = catalogItem.ItemOrder;
         await catalogRepository.SaveChangesAsync();
     }
 }
