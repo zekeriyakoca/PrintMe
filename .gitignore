@@ -26,3 +26,5 @@ PrintMe.API/appsettings.Production.json
 PrintMe.API/publish/
 
 .vs/
+
+.DS_Store
