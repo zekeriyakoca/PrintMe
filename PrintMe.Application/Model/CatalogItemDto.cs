@@ -36,6 +36,8 @@ public class CatalogItemDto
     public int ItemOrder { get; set; }
 
     public bool IsCustomProduct { get; set; }
+    
+    public bool IsHorizontal { get; set; } 
 
     public string VariantType => "";
     public string Rating => "";
@@ -48,7 +50,7 @@ public class CatalogItemDto
 
     [JsonConstructor]
     public CatalogItemDto(int id, string name, string motto, string description, string owner, decimal price, Category category, CatalogType catalogType, CatalogTags? tags,
-        int availableStock, int? salePercentage, List<ImageDto> images, PrintSize size, int itemOrder, bool isCustomProduct)
+        int availableStock, int? salePercentage, List<ImageDto> images, PrintSize size, int itemOrder, bool isCustomProduct, bool isHorizontal)
     {
         Id = id;
         Name = name;
@@ -65,6 +67,7 @@ public class CatalogItemDto
         Size = size;
         ItemOrder = itemOrder;
         IsCustomProduct = isCustomProduct;
+        IsHorizontal = isHorizontal;
     }
 
     // Example method to convert from CatalogItem to CatalogItemDto
@@ -91,7 +94,8 @@ public class CatalogItemDto
             },
             item.Size,
             item.ItemOrder,
-            item.Name == ApplicationConstants.CUSTOM_PRODUCT_NAME // TODO : Refactor here. This is a snap solution
+            item.Name == ApplicationConstants.CUSTOM_PRODUCT_NAME, // TODO : Refactor here. This is a snap solution
+            item.IsHorizontal
         );
     }
 
