@@ -7,13 +7,8 @@ using StackExchange.Redis;
 
 namespace PrintMe.API.Controllers;
 
-public class BootstrapController : BaseController
+public class BootstrapController(ILogger<BootstrapController> logger) : BaseController(logger)
 {
-
-    public BootstrapController(ILogger<BootstrapController> logger) : base(logger)
-    {
-    }
-    
     [HttpGet("/health-check")]
     public IActionResult HealthCheck([FromServices] TelemetryClient telemetryClient)
     {

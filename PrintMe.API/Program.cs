@@ -125,7 +125,7 @@ var logger = app.Services.GetRequiredService<ILogger<Program>>();
 logger.LogInformation("Application is starting up.");
 
 var telemetryClient = app.Services.GetRequiredService<TelemetryClient>();
-telemetryClient.TrackEvent("TrackEvent: Application is tarting up");
+telemetryClient.TrackEvent("TrackEvent: Application is starting up");
 telemetryClient.Flush();
 
 // Configure the HTTP request pipeline.

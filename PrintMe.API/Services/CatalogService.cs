@@ -127,7 +127,7 @@ public class CatalogService(ICatalogRepository catalogRepository, IDistributedCa
             .Select(x => CatalogItemDto.FromCatalogItem(x))
             .ToListAsync();
 
-        if (!searchRequestDto.HasQuery && searchRequestDto.OrderBy == OrderByEnum.Order)
+        if (searchRequestDto is { HasQuery: false, OrderBy: OrderByEnum.Order })
         {
             items = items.OrderBy(x => x.IsHorizontal).ToList();
         }

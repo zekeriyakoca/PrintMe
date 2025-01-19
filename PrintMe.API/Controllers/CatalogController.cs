@@ -10,22 +10,14 @@ using PrintMe.Application.Model;
 
 namespace PrintMe.API.Controllers;
 
-public class CatalogController : BaseController
+public class CatalogController(
+    ILogger<CatalogController> logger,
+    ICatalogService catalogService,
+    IImageRepository imageRepository,
+    IQueueRepository queueRepository,
+    IConfiguration configuration)
+    : BaseController(logger)
 {
-    private readonly ICatalogService _catalogService;
-    private readonly IImageRepository _imageRepository;
-    private readonly IQueueRepository _queueRepository;
-    private readonly IConfiguration _configuration;
-
-    public CatalogController(ILogger<CatalogController> logger, ICatalogService catalogService, IImageRepository imageRepository, IQueueRepository queueRepository,
-        IConfiguration configuration) : base(logger)
-    {
-        _catalogService = catalogService;
-        _imageRepository = imageRepository;
-        _queueRepository = queueRepository;
-        _configuration = configuration;
-    }
-
     [HttpPost("custom-product/upload-image")]
     [RequestSizeLimit(52428800)] // 50 MB in bytes
     public async Task<ActionResult> UploadCustomProductImage([FromForm] UploadCustomProductImageRequestDto dto)
@@ -43,13 +35,13 @@ public class CatalogController : BaseController
         var imageId = Guid.NewGuid().ToString();
         await using var imageStream = dto.Image.OpenReadStream();
         // TODO : Introduce a Image service and hide the implementation details
-        var customerImagesContainer = _configuration["AzureBlobStorageCustomProductImagesContainerName"];
+        var customerImagesContainer = configuration["AzureBlobStorageCustomProductImagesContainerName"];
         if (string.IsNullOrWhiteSpace(customerImagesContainer))
         {
             return StatusCode(500, "Server error!");
         }
 
-        var url = await _imageRepository.UploadBlobAsync(imageId, customerImagesContainer, imageStream);
+        var url = await imageRepository.UploadBlobAsync(imageId, customerImagesContainer, imageStream);
         return Ok(url);
     }
 
@@ -61,7 +53,7 @@ public class CatalogController : BaseController
             return BadRequest("Id is not valid.");
         }
 
-        var catalogItem = await _catalogService.GetCatalogItem(id);
+        var catalogItem = await catalogService.GetCatalogItem(id);
 
         if (catalogItem == null)
         {
@@ -74,7 +66,7 @@ public class CatalogController : BaseController
     [HttpGet("custom-product")]
     public async Task<ActionResult<CatalogItem>> GetCustomCatalogItem()
     {
-        var customProduct = await _catalogService.GetCustomCatalogItem();
+        var customProduct = await catalogService.GetCustomCatalogItem();
 
         if (customProduct == null)
         {
@@ -87,14 +79,14 @@ public class CatalogController : BaseController
     [HttpPost("search")]
     public async Task<ActionResult> SearchCatalogItems([FromBody] CatalogItemSearchRequestDto searchRequestDto)
     {
-        var items = await _catalogService.SearchCatalogItems(searchRequestDto);
+        var items = await catalogService.SearchCatalogItems(searchRequestDto);
         return Ok(items);
     }
 
     [HttpGet("search")]
     public async Task<ActionResult> GetCatalogItemsFiltered([FromQuery] CatalogItemSearchRequestDto searchRequestDto)
     {
-        var items = await _catalogService.SearchCatalogItems(searchRequestDto);
+        var items = await catalogService.SearchCatalogItems(searchRequestDto);
         return Ok(items);
     }
 
@@ -107,7 +99,7 @@ public class CatalogController : BaseController
             return BadRequest();
         }
 
-        await _catalogService.UpdateCatalogItem(catalogItem);
+        await catalogService.UpdateCatalogItem(catalogItem);
 
         return NoContent();
     }
@@ -121,7 +113,7 @@ public class CatalogController : BaseController
             return BadRequest("Id is not valid.");
         }
 
-        await _catalogService.DeleteCatalogItem(id);
+        await catalogService.DeleteCatalogItem(id);
         
         return Ok();
     }
@@ -141,7 +133,7 @@ public class CatalogController : BaseController
             otherImageStreams.Add(otherImage.OpenReadStream());
         }
 
-        await _imageRepository.UploadImageAsync(request.FolderName, imageStream, imageAlternateStream, thumbnailStream, thumbnailAlternateStream, otherImageStreams);
+        await imageRepository.UploadImageAsync(request.FolderName, imageStream, imageAlternateStream, thumbnailStream, thumbnailAlternateStream, otherImageStreams);
         return Ok("Images uploaded successfully.");
     }
 
@@ -154,11 +146,11 @@ public class CatalogController : BaseController
             var templates = RetrieveRandomTemplates(dto);
             var imageId = Guid.NewGuid().ToString();
             await using var imageStream = image.OpenReadStream();
-            var url = await _imageRepository.UploadBlobAsync(imageId + ".jpeg", imageStream);
+            var url = await imageRepository.UploadBlobAsync(imageId + ".jpeg", imageStream);
 
             var messageContent = new ImageProcessMessage(imageId, url, image.FileName, templates, dto.Tag);
 
-            await _queueRepository.SendImageProcessMessageAsync(messageContent);
+            await queueRepository.SendImageProcessMessageAsync(messageContent);
         }
 
         return Ok();

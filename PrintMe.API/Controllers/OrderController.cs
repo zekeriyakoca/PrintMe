@@ -5,14 +5,9 @@ using PrintMe.Application.Model;
 namespace PrintMe.API.Controllers;
 
 
-public class OrderController : BaseController
+public class OrderController(ILogger<OrderController> logger, IOrderService orderService) : BaseController(logger)
 {
-    private readonly IOrderService _orderService;
-
-    public OrderController(ILogger<OrderController> logger, IOrderService orderService) : base(logger)
-    {
-        _orderService = orderService;
-    }
+    private readonly IOrderService _orderService = orderService;
 
     [HttpGet("{orderId}")]
     public async Task<ActionResult<OrderSummary>> GetOrder([FromRoute] int orderId)

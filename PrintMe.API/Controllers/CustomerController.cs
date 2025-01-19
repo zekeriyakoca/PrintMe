@@ -7,15 +7,8 @@ using PrintMe.Application.Interfaces.Repositories;
 
 namespace PrintMe.API.Controllers;
 
-public class CustomerController : BaseController
+public class CustomerController(ILogger<CustomerController> logger, ICustomerRepository customerRepository) : BaseController(logger)
 {
-    private readonly ICustomerRepository _customerRepository;
-
-    public CustomerController(ILogger<CustomerController> logger, ICustomerRepository customerRepository) : base(logger)
-    {
-        _customerRepository = customerRepository;
-    }
-
     [HttpGet]
     public async Task<ActionResult<Customer>> GetCustomer()
     {
@@ -24,7 +17,7 @@ public class CustomerController : BaseController
             return BadRequest("User doesn't exist.");
         }
 
-        var customer = await _customerRepository.GetCustomer(CurrentUser.Id);
+        var customer = await customerRepository.GetCustomer(CurrentUser.Id);
 
         if (customer == null)
         {
@@ -47,7 +40,7 @@ public class CustomerController : BaseController
             return BadRequest("Id does not match.");
         }
 
-        await _customerRepository.UpdateCustomer(customer);
+        await customerRepository.UpdateCustomer(customer);
 
         return Ok();
     }
@@ -56,7 +49,7 @@ public class CustomerController : BaseController
     [Authorize(Policy = "User")]
     public async Task<ActionResult> CreateCustomer()
     {
-        if (await _customerRepository.Exist(CurrentUser.Id))
+        if (await customerRepository.Exist(CurrentUser.Id))
         {
             return Ok();
         }
@@ -74,7 +67,7 @@ public class CustomerController : BaseController
             Email = CurrentUser.Email ?? string.Empty,
             ProfilePictureUrl = CurrentUser.ProfilePictureUrl
         };
-        await _customerRepository.CreateCustomer(customer);
+        await customerRepository.CreateCustomer(customer);
 
         return Ok();
     }
