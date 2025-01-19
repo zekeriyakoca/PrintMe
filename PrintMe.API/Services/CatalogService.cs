@@ -105,16 +105,20 @@ public class CatalogService(ICatalogRepository catalogRepository, IDistributedCa
             query = query.Where(x => x.Size == searchRequestDto.Size);
         }
 
-        query = searchRequestDto.OrderBy switch
+        if (!searchRequestDto.HasQuery)
         {
-            OrderByEnum.Order => query.OrderByDescending(x => x.ItemOrder),
-            OrderByEnum.PriceAsc => query.OrderBy(x => x.Price),
-            OrderByEnum.PriceDesc => query.OrderByDescending(x => x.Price),
-            OrderByEnum.DateAsc => query.OrderBy(x => x.Id),
-            OrderByEnum.DateDesc => query.OrderByDescending(x => x.Id),
-            OrderByEnum.MostPopular => query.OrderBy(x => x.Id),
-            _ => query
-        };
+            query = searchRequestDto.OrderBy switch
+            {
+                OrderByEnum.Order => query.OrderByDescending(x => x.ItemOrder),
+                OrderByEnum.PriceAsc => query.OrderBy(x => x.Price),
+                OrderByEnum.PriceDesc => query.OrderByDescending(x => x.Price),
+                OrderByEnum.DateAsc => query.OrderBy(x => x.Id),
+                OrderByEnum.DateDesc => query.OrderByDescending(x => x.Id),
+                OrderByEnum.MostPopular => query.OrderBy(x => x.Id),
+                _ => query
+            };
+        }
+        
         var count = await query.LongCountAsync();
         var items = await query
             .Where(x => x.Name != ApplicationConstants.CUSTOM_PRODUCT_NAME)
@@ -123,7 +127,7 @@ public class CatalogService(ICatalogRepository catalogRepository, IDistributedCa
             .Select(x => CatalogItemDto.FromCatalogItem(x))
             .ToListAsync();
 
-        if (searchRequestDto.OrderBy == OrderByEnum.Order)
+        if (!searchRequestDto.HasQuery && searchRequestDto.OrderBy == OrderByEnum.Order)
         {
             items = items.OrderBy(x => x.IsHorizontal).ToList();
         }
