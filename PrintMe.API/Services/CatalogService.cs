@@ -14,36 +14,36 @@ public class CatalogService(ICatalogRepository catalogRepository, IDistributedCa
 {
     public async Task<PaginatedItems<CatalogItemDto>> GetCatalogItems(PaginationRequestDto paginationRequestDto)
     {
-        var totalItemsCount =  catalogRepository.GetCatalogItemsLazily().Count();
-        
+        var totalItemsCount = catalogRepository.GetCatalogItemsLazily().Count();
+
         var items = await catalogRepository.GetCatalogItemsLazily()
             .OrderBy(c => c.Name)
             .Where(x => x.Name != ApplicationConstants.CUSTOM_PRODUCT_NAME)
             .Skip(paginationRequestDto.PageIndex * paginationRequestDto.PageSize)
             .Take(paginationRequestDto.PageSize)
-            .Select(x=> CatalogItemDto.FromCatalogItem(x))
+            .Select(x => CatalogItemDto.FromCatalogItem(x))
             .ToListAsync();
-        
+
         var result = new PaginatedItems<CatalogItemDto>(paginationRequestDto.PageIndex, paginationRequestDto.PageSize, totalItemsCount, items);
-        
+
         return result;
     }
-    
+
     public async Task<IEnumerable<CatalogItemDto>> GetItemsByIds(int[] ids)
     {
-        var items =  await catalogRepository.GetCatalogItemsLazily()
-            .Select(x=> CatalogItemDto.FromCatalogItem(x))
-            .Where(x=> ids.Contains(x.Id) && x.Name != ApplicationConstants.CUSTOM_PRODUCT_NAME)
+        var items = await catalogRepository.GetCatalogItemsLazily()
+            .Select(x => CatalogItemDto.FromCatalogItem(x))
+            .Where(x => ids.Contains(x.Id) && x.Name != ApplicationConstants.CUSTOM_PRODUCT_NAME)
             .ToListAsync();
-        
+
         return items;
     }
-    
+
     public async Task<PaginatedItems<CatalogItemDto>> SearchCatalogItems(CatalogItemSearchRequestDto searchRequestDto)
     {
         var cacheKey = searchRequestDto.GetHashCode().ToString();
         var cachedResult = await cache.GetStringAsync(cacheKey);
-        if(!string.IsNullOrEmpty(cachedResult))
+        if (!string.IsNullOrEmpty(cachedResult))
         {
             var cachedItems = JsonSerializer.Deserialize<PaginatedItems<CatalogItemDto>>(cachedResult);
             if (cachedItems != null)
@@ -51,53 +51,55 @@ public class CatalogService(ICatalogRepository catalogRepository, IDistributedCa
                 return cachedItems;
             }
         }
-        
+
         var result = await SearchCatalogItems_DoWork(searchRequestDto);
-        await cache.SetStringAsync(cacheKey, JsonSerializer.Serialize(result), new DistributedCacheEntryOptions() { AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(5)});
+        await cache.SetStringAsync(cacheKey, JsonSerializer.Serialize(result), new DistributedCacheEntryOptions() { AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(5) });
 
         return result;
     }
-    
+
     private async Task<PaginatedItems<CatalogItemDto>> SearchCatalogItems_DoWork(CatalogItemSearchRequestDto searchRequestDto)
     {
         var query = catalogRepository.GetCatalogItemsLazily();
-        
+
         if (!string.IsNullOrEmpty(searchRequestDto.SearchTerm))
         {
             // TODO : Implement free text search and, then, search utilizing AI
-            query = query.Where(x => x.Name.Contains(searchRequestDto.SearchTerm) || x.Description.Contains(searchRequestDto.SearchTerm) || x.Motto.Contains(searchRequestDto.SearchTerm) || x.Owner.Contains(searchRequestDto.SearchTerm) || x.SearchParameters.Contains(searchRequestDto.SearchTerm));
+            query = query.Where(x =>
+                x.Name.Contains(searchRequestDto.SearchTerm) || x.Description.Contains(searchRequestDto.SearchTerm) || x.Motto.Contains(searchRequestDto.SearchTerm) ||
+                x.Owner.Contains(searchRequestDto.SearchTerm) || x.SearchParameters.Contains(searchRequestDto.SearchTerm));
         }
-        
+
         if (searchRequestDto.PriceFrom.HasValue)
         {
             query = query.Where(x => x.Price >= searchRequestDto.PriceFrom);
         }
-        
+
         if (searchRequestDto.PriceTo.HasValue)
         {
             query = query.Where(x => x.Price <= searchRequestDto.PriceTo);
         }
-        
+
         if (searchRequestDto.IsOnlyAvailableItems)
         {
             query = query.Where(x => x.AvailableStock > 0);
         }
-        
+
         if (searchRequestDto.Tags.HasValue)
         {
             query = query.Where(x => x.Tags.HasValue && x.Tags.Value.HasFlag(searchRequestDto.Tags.Value));
         }
-        
+
         if (searchRequestDto.Type.HasValue)
         {
             query = query.Where(x => x.CatalogType.HasFlag(searchRequestDto.Type.Value));
         }
-        
+
         if (searchRequestDto.Category.HasValue)
         {
             query = query.Where(x => (searchRequestDto.Category.Value & x.Category) > 0);
         }
-        
+
         if (searchRequestDto.Size.HasValue)
         {
             query = query.Where(x => x.Size == searchRequestDto.Size);
@@ -118,9 +120,11 @@ public class CatalogService(ICatalogRepository catalogRepository, IDistributedCa
             .Where(x => x.Name != ApplicationConstants.CUSTOM_PRODUCT_NAME)
             .Skip(searchRequestDto.PageIndex * searchRequestDto.PageSize)
             .Take(searchRequestDto.PageSize)
-            .Select(x=> CatalogItemDto.FromCatalogItem(x))
+            .Select(x => CatalogItemDto.FromCatalogItem(x))
             .ToListAsync();
 
+        items = items.OrderBy(x => x.IsHorizontal).ToList();
+        
         return new PaginatedItems<CatalogItemDto>(searchRequestDto.PageIndex, searchRequestDto.PageSize, count, items);
     }
 
@@ -128,25 +132,27 @@ public class CatalogService(ICatalogRepository catalogRepository, IDistributedCa
     {
         return CatalogItemDto.FromCatalogItem(await catalogRepository.GetCatalogItem(id) ?? throw new GenericNotFoundException("Catalog item not found."));
     }
-    
+
     public Task DeleteCatalogItem(int id)
     {
         return catalogRepository.DeleteCatalogItem(id);
     }
-    
+
     // TODO : Refactor here
     public async Task<CatalogItemDto?> GetCustomCatalogItem()
     {
-        return CatalogItemDto.FromCatalogItem(await catalogRepository.GetCatalogItemByName(ApplicationConstants.CUSTOM_PRODUCT_NAME) ?? throw new GenericNotFoundException("Custom product not found."));
+        return CatalogItemDto.FromCatalogItem(await catalogRepository.GetCatalogItemByName(ApplicationConstants.CUSTOM_PRODUCT_NAME) ??
+                                              throw new GenericNotFoundException("Custom product not found."));
     }
 
     public async Task UpdateCatalogItem(UpdateCatalogItemRequestDto catalogItem)
     {
         var entity = await catalogRepository.GetCatalogItem(catalogItem.Id);
-        if(entity == null)
+        if (entity == null)
         {
             throw new Exception("Catalog item not found.");
         }
+
         entity.Name = catalogItem.Name;
         entity.Description = catalogItem.Description;
         entity.Price = catalogItem.Price;
