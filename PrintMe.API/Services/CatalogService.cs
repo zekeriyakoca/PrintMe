@@ -123,7 +123,10 @@ public class CatalogService(ICatalogRepository catalogRepository, IDistributedCa
             .Select(x => CatalogItemDto.FromCatalogItem(x))
             .ToListAsync();
 
-        items = items.OrderBy(x => x.IsHorizontal).ToList();
+        if (searchRequestDto.OrderBy == OrderByEnum.Order)
+        {
+            items = items.OrderBy(x => x.IsHorizontal).ToList();
+        }
         
         return new PaginatedItems<CatalogItemDto>(searchRequestDto.PageIndex, searchRequestDto.PageSize, count, items);
     }
