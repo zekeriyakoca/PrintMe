@@ -21,4 +21,6 @@ public class UpdateCatalogItemRequestDto
 
     [Range(0,Int32.MaxValue)]
     public int ItemOrder { get; set; } = 0;
+
+    public bool IsHorizontal { get; set; } = false;
 }

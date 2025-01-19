@@ -163,6 +163,7 @@ public class CatalogService(ICatalogRepository catalogRepository, IDistributedCa
         entity.CatalogType = catalogItem.CatalogType;
         entity.Tags = catalogItem.Tags;
         entity.ItemOrder = catalogItem.ItemOrder;
+        entity.IsHorizontal = catalogItem.IsHorizontal;
         await catalogRepository.SaveChangesAsync();
     }
 }
