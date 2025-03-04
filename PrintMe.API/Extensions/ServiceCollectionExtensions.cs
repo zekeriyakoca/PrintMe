@@ -12,7 +12,7 @@ public static class ServiceCollectionExtensions
     public static void AddApplicationServices(this IHostApplicationBuilder builder)
     {
         builder.Services.AddDbContext<ApplicationContext>(options =>
-             options.UseSqlServer(builder.Configuration.GetConnectionString("SqlDefaultConnection"),  b => b.MigrationsAssembly("PrintMe.API")));
+             options.UseNpgsql(builder.Configuration.GetConnectionString("SqlDefaultConnection"),  b => b.MigrationsAssembly("PrintMe.API")));
 
         builder.Services.AddTransient<ICatalogService, CatalogService>();
         builder.Services.AddTransient<IOrderService, OrderService>();
