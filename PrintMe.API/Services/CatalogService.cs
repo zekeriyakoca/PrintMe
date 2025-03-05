@@ -65,9 +65,9 @@ public class CatalogService(ICatalogRepository catalogRepository, IDistributedCa
         if (!string.IsNullOrEmpty(searchRequestDto.SearchTerm))
         {
             // TODO : Implement free text search and, then, search utilizing AI
-            query = query.Where(x =>
-                x.Name.Contains(searchRequestDto.SearchTerm) || x.Description.Contains(searchRequestDto.SearchTerm) || x.Motto.Contains(searchRequestDto.SearchTerm) ||
-                x.Owner.Contains(searchRequestDto.SearchTerm) || x.SearchParameters.Contains(searchRequestDto.SearchTerm));
+            query = query.Where(x => EF.Functions.ILike(x.Name, $"%{searchRequestDto.SearchTerm}%")
+                                     || EF.Functions.ILike(x.Description, $"%{searchRequestDto.SearchTerm}%")
+                                     || EF.Functions.ILike(x.Motto, $"%{searchRequestDto.SearchTerm}%"));
         }
 
         if (searchRequestDto.PriceFrom.HasValue)
@@ -118,10 +118,11 @@ public class CatalogService(ICatalogRepository catalogRepository, IDistributedCa
                 _ => query
             };
         }
-        
-        var count = await query.LongCountAsync();
+
+        query = query.Where(x => x.Name != ApplicationConstants.CUSTOM_PRODUCT_NAME);
+
+        var count = await query.Select(x => x.Id).CountAsync();
         var items = await query
-            .Where(x => x.Name != ApplicationConstants.CUSTOM_PRODUCT_NAME)
             .Skip(searchRequestDto.PageIndex * searchRequestDto.PageSize)
             .Take(searchRequestDto.PageSize)
             .Select(x => CatalogItemDto.FromCatalogItem(x))
@@ -131,7 +132,7 @@ public class CatalogService(ICatalogRepository catalogRepository, IDistributedCa
         {
             items = items.OrderBy(x => x.IsHorizontal).ToList();
         }
-        
+
         return new PaginatedItems<CatalogItemDto>(searchRequestDto.PageIndex, searchRequestDto.PageSize, count, items);
     }
 

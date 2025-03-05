@@ -29,7 +29,23 @@ public class CatalogItemConfiguration : IEntityTypeConfiguration<CatalogItem>
 {
     public void Configure(EntityTypeBuilder<CatalogItem> builder)
     {
-        builder.HasIndex(ci => ci.Name);
+        builder.HasIndex(p => p.Category);
+        builder.HasIndex(p => p.AvailableStock);
+        builder.HasIndex(p => p.Price);
+        builder.HasIndex(p => p.Tags);
+
+        builder
+            .HasIndex(p => p.Name)
+            .HasDatabaseName("idx_catalog_name");
+        
+        builder
+            .HasIndex(p => p.Description)
+            .HasDatabaseName("idx_catalog_description");
+        
+        builder
+            .HasIndex(p => p.Motto)
+            .HasDatabaseName("idx_catalog_motto");
+        
         builder.Property(b => b.Price)
             .HasPrecision(18, 2);
     }
